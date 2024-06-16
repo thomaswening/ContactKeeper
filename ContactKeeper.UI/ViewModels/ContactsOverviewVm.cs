@@ -8,12 +8,23 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
+using ContactKeeper.Core.Interfaces;
+using ContactKeeper.UI.Utilities;
+
+using Serilog;
+
 namespace ContactKeeper.UI.ViewModels;
-internal partial class ContactsOverviewVm : ObservableObject
+internal partial class ContactsOverviewVm(IContactService contactService) : ObservableObject
 {
+    private readonly IContactService contactService = contactService ?? throw new ArgumentNullException(nameof(contactService));
+
     [ObservableProperty]
     private ObservableCollection<ContactVm> contacts = [];
 
+    public async Task InitializeContacts()
+    {
+        Contacts = new ObservableCollection<ContactVm>(ContactHelper.Map(await contactService.GetContactsAsync()));
+    }
 
     [RelayCommand]
     private void AddContact()
@@ -22,10 +33,13 @@ internal partial class ContactsOverviewVm : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(IsContactNotNull))]
-    private void DeleteContact(ContactVm contact)
+    private async Task DeleteContactAsync(ContactVm contact)
     {
-        throw new NotImplementedException();
-
+        var ret = await contactService.DeleteContactAsync(contact.Id);
+        if (ret is not null)
+        {
+            Contacts.Remove(contact);
+        }
     }
 
     [RelayCommand(CanExecute = nameof(IsContactNotNull))]

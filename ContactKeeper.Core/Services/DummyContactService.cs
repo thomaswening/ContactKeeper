@@ -16,9 +16,6 @@ public class DummyContactService : IContactService
 {
     public List<Contact> Contacts { get; private set; } = [];
 
-    /// </inheritdoc>
-    public event EventHandler? ContactsChanged;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="DummyContactService"/> class and generates dummy contacts.
     /// </summary>
@@ -28,12 +25,12 @@ public class DummyContactService : IContactService
     }
 
     /// </inheritdoc>
-    public async Task<Contact?> AddContactAsync(Contact contact)
+    public async Task<Contact?> AddContactAsync(ContactInfo contactInfo)
     {
         return await Task.Run(() =>
         {
+            var contact = contactInfo.ToContact();
             Contacts.Add(contact);
-            ContactsChanged?.Invoke(this, EventArgs.Empty);
             return contact;
         });
     }
@@ -47,7 +44,6 @@ public class DummyContactService : IContactService
             if (foundContact is not null)
             {
                 Contacts.Remove(foundContact);
-                ContactsChanged?.Invoke(this, EventArgs.Empty);
             }
 
             return foundContact?.Id;
@@ -61,7 +57,7 @@ public class DummyContactService : IContactService
     }
 
     /// </inheritdoc>
-    public async Task InitializeContactsAsync()
+    public static async Task InitializeContactsAsync()
     {
         await Task.Delay(1000);
     }
@@ -73,18 +69,17 @@ public class DummyContactService : IContactService
     }
 
     /// </inheritdoc>
-    public async Task<Contact?> UpdateContactAsync(Contact contact)
+    public async Task<Contact?> UpdateContactAsync(Guid id, ContactInfo contactInfo)
     {
         return await Task.Run(() =>
         {
-            var existingContact = Contacts.FirstOrDefault(c => c.Id == contact.Id);
+            var existingContact = Contacts.FirstOrDefault(c => c.Id == id);
             if (existingContact is not null)
             {
-                existingContact.FirstName = contact.FirstName;
-                existingContact.LastName = contact.LastName;
-                existingContact.Email = contact.Email;
-                existingContact.Phone = contact.Phone;
-                ContactsChanged?.Invoke(this, EventArgs.Empty);
+                existingContact.FirstName = contactInfo.FirstName ?? existingContact.FirstName;
+                existingContact.LastName = contactInfo.LastName ?? existingContact.LastName;
+                existingContact.Email = contactInfo.Email ?? existingContact.Email;
+                existingContact.Phone = contactInfo.Phone ?? existingContact.Phone;
             }
 
             return existingContact;
