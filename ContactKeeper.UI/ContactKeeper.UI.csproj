@@ -17,4 +17,8 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00972" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ContactKeeper.Core\ContactKeeper.Core.csproj" />
+  </ItemGroup>
+
 </Project>

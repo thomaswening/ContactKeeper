@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
+using ContactKeeper.UI.Utilities;
+
 namespace ContactKeeper.UI.ViewModels;
 internal partial class MainWindowVm : ObservableObject
 {
+    private readonly ViewModelFactory viewModelFactory;
+
     [ObservableProperty]
     private ObservableObject currentViewModel;
 
-    public MainWindowVm()
+    public MainWindowVm(ViewModelFactory viewModelFactory)
     {
-        CurrentViewModel = new ContactsOverviewVm();
+        this.viewModelFactory = viewModelFactory ?? throw new ArgumentNullException(nameof(viewModelFactory));
+        CurrentViewModel = viewModelFactory.CreateContactsOverviewVm();
     }
 }
