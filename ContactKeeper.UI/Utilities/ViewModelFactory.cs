@@ -13,8 +13,10 @@ namespace ContactKeeper.UI.Utilities;
 
 internal class ViewModelFactory(IContactService contactService)
 {
-    public ContactsOverviewVm CreateContactsOverviewVm()
+    public async Task<ContactsOverviewVm> CreateContactsOverviewVmAsync()
     {
-        return new ContactsOverviewVm(contactService);
+        var vm = new ContactsOverviewVm(contactService);
+        await vm.InitializeContacts();
+        return vm;
     }
 }

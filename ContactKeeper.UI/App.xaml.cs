@@ -5,6 +5,8 @@ using System.Windows;
 
 using ContactKeeper.Core.Interfaces;
 using ContactKeeper.Core.Services;
+using ContactKeeper.Infrastructure.Repositories;
+using ContactKeeper.Infrastructure.Utilities;
 using ContactKeeper.UI.Utilities;
 using ContactKeeper.UI.ViewModels;
 using ContactKeeper.UI.Views;
@@ -61,9 +63,11 @@ public partial class App : Application
         return logger;
     }
 
-    private void Application_Startup(object sender, StartupEventArgs e)
+    private async void Application_Startup(object sender, StartupEventArgs e)
     {
         var viewModel = new MainWindowVm(viewModelFactory);
+        await viewModel.InitializeAsync();
+
         var mainWindow = new MainWindow()
         {
             DataContext = viewModel
