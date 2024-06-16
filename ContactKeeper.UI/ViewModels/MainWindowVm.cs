@@ -11,4 +11,9 @@ internal partial class MainWindowVm : ObservableObject
 {
     [ObservableProperty]
     private ObservableObject currentViewModel;
+
+    public MainWindowVm()
+    {
+        CurrentViewModel = new ContactsOverviewVm();
+    }
 }

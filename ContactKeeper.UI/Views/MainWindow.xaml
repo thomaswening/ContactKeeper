@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:ContactKeeper.UI.Views"
+        xmlns:viewmodels="clr-namespace:ContactKeeper.UI.ViewModels"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowVm, IsDesignTimeCreatable=True}"
         Title="ContactKeeper" 
         Height="500" 
         Width="600"
@@ -15,15 +17,22 @@
 
     <Window.Resources>        
         
+        <!--User Control Style-->
         <Style TargetType="{x:Type UserControl}"
                x:Key="View">
 
             <Setter Property="VerticalAlignment"
                     Value="Center" />
         </Style>
+
+        <!--Data Templates for ViewModels-->
+        <DataTemplate DataType="{x:Type viewmodels:ContactsOverviewVm}">
+            <local:ContactsOverview VerticalAlignment="Top" />
+        </DataTemplate>
     </Window.Resources>
     
     <Grid>
-
+        <ContentControl Content="{Binding CurrentViewModel}"
+                        Margin="15" />
     </Grid>
 </Window>

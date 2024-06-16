@@ -3,6 +3,7 @@ using System.Data;
 using System.IO;
 using System.Windows;
 
+using ContactKeeper.UI.ViewModels;
 using ContactKeeper.UI.Views;
 
 using Serilog;
@@ -37,7 +38,11 @@ public partial class App : Application
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
-        var mainWindow = new MainWindow();
+        var viewModel = new MainWindowVm();
+        var mainWindow = new MainWindow()
+        {
+            DataContext = viewModel
+        };
         mainWindow.Show();
     }
 }
