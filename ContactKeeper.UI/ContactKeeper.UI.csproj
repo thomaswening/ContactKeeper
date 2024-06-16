@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ContactKeeper.Core\ContactKeeper.Core.csproj" />
+    <ProjectReference Include="..\ContactKeeper.Infrastructure\ContactKeeper.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

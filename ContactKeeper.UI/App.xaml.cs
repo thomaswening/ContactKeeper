@@ -10,6 +10,7 @@ using ContactKeeper.UI.ViewModels;
 using ContactKeeper.UI.Views;
 
 using Serilog;
+using Serilog.Core;
 
 namespace ContactKeeper.UI;
 
@@ -25,12 +26,25 @@ public partial class App : Application
 
     public App()
     {
-        logger = InitializeLogger();
-        contactService = new DummyContactService();
+        logger = InitializeSeriLogger();
+        //contactService = new DummyContactService();
+        contactService = InitializeContactService(logger);
         viewModelFactory = new ViewModelFactory(contactService);
     }
 
-    private static ILogger InitializeLogger()
+    private static ContactService InitializeContactService(ILogger logger)
+    {
+        var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        var appDirectory = Path.Combine(appDataPath, ApplicationName);
+        var filePath = AppDataInitializer.Initialize(appDirectory);
+
+        var jsonContactRepository = new JsonContactRepository(logger, filePath);
+        var contactService = new ContactService(logger, jsonContactRepository);
+
+        return contactService;
+    }
+
+    private static Logger InitializeSeriLogger()
     {
         var logPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), ApplicationName, "logs");
 
