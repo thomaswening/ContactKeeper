@@ -3,6 +3,8 @@ using System.Data;
 using System.IO;
 using System.Windows;
 
+using ContactKeeper.UI.Views;
+
 using Serilog;
 
 namespace ContactKeeper.UI;
