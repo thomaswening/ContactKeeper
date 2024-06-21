@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ContactKeeper.UI.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:ContactKeeper.UI.ValueConverters"
              xmlns:viewmodels="clr-namespace:ContactKeeper.UI.ViewModels"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
@@ -13,7 +14,8 @@
              d:Background="White">
 
     <UserControl.Resources>
-        
+        <converters:TrimStringConverter x:Key="TrimString" />
+
         <!--TextBox Style-->
         <Style TargetType="{x:Type TextBox}"
                BasedOn="{StaticResource MaterialDesignTextBox}">
@@ -85,7 +87,7 @@
                  Name="FirstNameTextBox"
                  materialDesign:HintAssist.Hint="First Name"
                  materialDesign:TextFieldAssist.HasClearButton="True"
-                 Text="{Binding FirstName, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                 Text="{Binding FirstName, Converter={StaticResource TrimString}, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--Last Name-->
         <materialDesign:PackIcon Grid.Row="2"
@@ -99,7 +101,7 @@
                  Name="LastNameTextBox"
                  materialDesign:HintAssist.Hint="Last Name"
                  materialDesign:TextFieldAssist.HasClearButton="True"
-                 Text="{Binding LastName, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                 Text="{Binding LastName, Converter={StaticResource TrimString}, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--Phone-->
         <materialDesign:PackIcon Grid.Row="3"
@@ -113,7 +115,7 @@
                  Name="PhoneTextBox"
                  materialDesign:HintAssist.Hint="Phone"
                  materialDesign:TextFieldAssist.HasClearButton="True"
-                 Text="{Binding Phone, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                 Text="{Binding Phone, Converter={StaticResource TrimString}, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--Email-->
         <materialDesign:PackIcon Grid.Row="4"
@@ -127,7 +129,7 @@
                  Name="EmailTextBox"
                  materialDesign:HintAssist.Hint="Email"
                  materialDesign:TextFieldAssist.HasClearButton="True"
-                 Text="{Binding Email, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                 Text="{Binding Email, Converter={StaticResource TrimString}, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
 
         <!-- Action Buttons -->
         <StackPanel Orientation="Horizontal"
