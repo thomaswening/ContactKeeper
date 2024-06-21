@@ -35,7 +35,7 @@ To build the ContactKeeper project, follow these steps:
 
 ## Data Storage
 
-The contact data is stored in a JSON file. The file path is determined by the application's base directory and the default file name "contacts.json", e.g. `C:\Users\AuntieJoe\AppData\Roaming\ContactKeeper`. The ` class is responsible for reading and writing the contact data to the JSON file.
+The contact data is stored in a JSON file. The file path is determined by the application's base directory and the default file name "contacts.json", e.g. `C:\Users\AuntieJoe\AppData\Roaming\ContactKeeper`.
 
 ## Project Structure
 
