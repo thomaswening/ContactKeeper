@@ -23,6 +23,7 @@ ContactKeeper is a contact management application for Windows Desktop that allow
 - CommunityToolkit.Mvvm package
 - MaterialDesignThemes package
 - Serilog package
+- Microsoft.Xaml.Behaviors.Wpf package
 
 ## Building the Project
 
