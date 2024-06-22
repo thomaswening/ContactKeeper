@@ -188,7 +188,7 @@ internal partial class EditContactVm : ValidatedViewModel
                 Phone = Phone
             };
 
-            return contactInfo.IsMatch(ContactMapper.Map(Contact));
+            return !contactInfo.IsMatch(ContactMapper.Map(Contact));
         }
     }
 }
