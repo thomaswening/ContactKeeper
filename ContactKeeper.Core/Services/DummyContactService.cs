@@ -14,6 +14,8 @@ namespace ContactKeeper.Core.Services;
 /// </summary>
 public class DummyContactService : IContactService
 {
+    public event EventHandler? ContactsChanged;
+
     public List<Contact> Contacts { get; private set; } = [];
 
     /// <summary>
@@ -31,6 +33,8 @@ public class DummyContactService : IContactService
         {
             var contact = contactInfo.ToContact();
             Contacts.Add(contact);
+            ContactsChanged?.Invoke(this, EventArgs.Empty);
+
             return contact;
         });
     }
@@ -44,6 +48,7 @@ public class DummyContactService : IContactService
             if (foundContact is not null)
             {
                 Contacts.Remove(foundContact);
+                ContactsChanged?.Invoke(this, EventArgs.Empty);
             }
 
             return foundContact?.Id;
@@ -80,6 +85,8 @@ public class DummyContactService : IContactService
                 existingContact.LastName = contactInfo.LastName ?? existingContact.LastName;
                 existingContact.Email = contactInfo.Email ?? existingContact.Email;
                 existingContact.Phone = contactInfo.Phone ?? existingContact.Phone;
+
+                ContactsChanged?.Invoke(this, EventArgs.Empty);
             }
 
             return existingContact;

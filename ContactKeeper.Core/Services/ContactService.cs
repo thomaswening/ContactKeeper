@@ -27,6 +27,7 @@ public class ContactService(ILogger logger, IContactRepository repository) : ICo
     
     public List<Contact>? Contacts { get; private set; }
 
+    public event EventHandler? ContactsChanged;
 
     /// </inheritdoc>
     public async Task<Contact?> AddContactAsync(ContactInfo contactInfo)
@@ -43,6 +44,7 @@ public class ContactService(ILogger logger, IContactRepository repository) : ICo
             var newContact = contactInfo.ToContact();
             Contacts.Add(newContact);
             await repository.SaveContactsAsync(Contacts);
+            ContactsChanged?.Invoke(this, EventArgs.Empty);
 
             logger.Information($"New contact added successfully with ID {newContact.Id}.");
 
@@ -76,6 +78,7 @@ public class ContactService(ILogger logger, IContactRepository repository) : ICo
 
             Contacts.Remove(foundContact);
             await repository.SaveContactsAsync(Contacts);
+            ContactsChanged?.Invoke(this, EventArgs.Empty);
 
             logger.Information($"Contact with ID {id} deleted successfully.");
 
@@ -166,6 +169,7 @@ public class ContactService(ILogger logger, IContactRepository repository) : ICo
             existingContact.Phone = updateInfo.Phone ?? existingContact.Phone;
 
             await repository.SaveContactsAsync(Contacts);
+            ContactsChanged?.Invoke(this, EventArgs.Empty);
 
             logger.Information($"Contact with ID {id} updated successfully.");
 

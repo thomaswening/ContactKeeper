@@ -13,6 +13,11 @@ namespace ContactKeeper.Core.Interfaces;
 public interface IContactService
 {
     /// <summary>
+    /// Occurs when the contacts have changed.
+    /// </summary>
+    event EventHandler? ContactsChanged;
+
+    /// <summary>
     /// Gets the current contacts.
     /// </summary>
     /// <returns>A task returning an <see cref="IEnumerable{Contact}"/> of the contacts.</returns>

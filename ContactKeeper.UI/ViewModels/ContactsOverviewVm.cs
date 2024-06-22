@@ -15,19 +15,25 @@ using Serilog;
 
 namespace ContactKeeper.UI.ViewModels;
 
-internal partial class ContactsOverviewVm(IContactService contactService) : ObservableObject
+internal partial class ContactsOverviewVm : ObservableObject
 {
-    private readonly IContactService contactService = contactService ?? throw new ArgumentNullException(nameof(contactService));
+    private readonly IContactService contactService;
 
     public event EventHandler? AddContactRequested;
     public event EventHandler<EditContactEventArgs>? EditContactRequested;
 
     [ObservableProperty]
-    private ObservableCollection<ContactVm> contacts = [];
+    private List<ContactVm> contacts = [];
+
+    public ContactsOverviewVm(IContactService contactService)
+    {
+        this.contactService = contactService ?? throw new ArgumentNullException(nameof(contactService));
+        contactService.ContactsChanged += OnContactsChanged;
+    }
 
     public async Task InitializeContacts()
     {
-        Contacts = new ObservableCollection<ContactVm>(ContactMapper.Map(await contactService.GetContactsAsync()));
+        Contacts = ContactMapper.Map(await contactService.GetContactsAsync()).ToList();
     }
 
     [RelayCommand]
@@ -39,11 +45,7 @@ internal partial class ContactsOverviewVm(IContactService contactService) : Obse
     [RelayCommand(CanExecute = nameof(IsContactNotNull))]
     private async Task DeleteContactAsync(ContactVm contact)
     {
-        var ret = await contactService.DeleteContactAsync(contact.Id);
-        if (ret is not null)
-        {
-            Contacts.Remove(contact);
-        }
+        await contactService.DeleteContactAsync(contact.Id);
     }
 
     [RelayCommand(CanExecute = nameof(IsContactNotNull))]
@@ -53,4 +55,7 @@ internal partial class ContactsOverviewVm(IContactService contactService) : Obse
     }
 
     private static bool IsContactNotNull(ContactVm? contact) => contact is not null;
+
+    private async void OnContactsChanged(object? sender, EventArgs e) => await InitializeContacts();
+
 }
