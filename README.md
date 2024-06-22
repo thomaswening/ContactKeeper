@@ -16,6 +16,23 @@ ContactKeeper is a contact management application for Windows Desktop that allow
 - Integration with Google Contacts
 - Themes and customization options
 
+## Screenshots
+
+### Contacts Overview
+![Contacts Overview](Readme-Resources/contacts-overview.png)
+
+### Add Contact
+![Add Contact](Readme-Resources/add-contact.png)
+
+### Edit Contact
+![Edit Contact](Readme-Resources/edit-contact.png)
+
+### Unsaved Changes
+![Unsaved Changes](Readme-Resources/unsaved-changes.png)
+
+### Confirm Overwrite
+![Confirm Overwrite](Readme-Resources/confirm-overwrite.png)
+
 ## Dependencies
 
 - .NET Framework 8.0 or higher
