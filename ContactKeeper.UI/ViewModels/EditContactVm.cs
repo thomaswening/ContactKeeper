@@ -25,19 +25,31 @@ internal partial class EditContactVm : ValidatedViewModel
     private readonly IContactService contactService;
     private readonly ILogger logger;
 
+    private ContactInfo ContactInfo => new()
+    {
+        Email = Email ?? string.Empty,
+        FirstName = FirstName ?? string.Empty,
+        LastName = LastName ?? string.Empty,
+        Phone = Phone ?? string.Empty
+    };
+
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ContactInfo))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string firstName = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ContactInfo))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string lastName = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ContactInfo))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string email = string.Empty;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ContactInfo))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     private string phone = string.Empty;
 
@@ -94,14 +106,6 @@ internal partial class EditContactVm : ValidatedViewModel
     {
         if (HasUnsavedChanges)
         {
-            var contactInfo = new ContactInfo()
-            {
-                Email = Email,
-                FirstName = FirstName,
-                LastName = LastName,
-                Phone = Phone
-            };
-
             // Is there already a contact with the same name?
             var duplicateId = await FindDuplicateContact();
 
@@ -117,15 +121,15 @@ internal partial class EditContactVm : ValidatedViewModel
                     await contactService.DeleteContactAsync(Contact.Id);
                 }
 
-                await contactService.UpdateContactAsync(duplicateId.Value, contactInfo);
+                await contactService.UpdateContactAsync(duplicateId.Value, ContactInfo);
             }
             else if (Contact is not null)
             {
-                await contactService.UpdateContactAsync(Contact.Id, contactInfo);
+                await contactService.UpdateContactAsync(Contact.Id, ContactInfo);
             }
             else
             {
-                await contactService.AddContactAsync(contactInfo);
+                await contactService.AddContactAsync(ContactInfo);
             }
         }        
 
@@ -177,22 +181,5 @@ internal partial class EditContactVm : ValidatedViewModel
         CloseRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    private bool HasUnsavedChanges
-    {
-        get
-        {
-            if (Contact is null)
-                return true;
-
-            var contactInfo = new ContactInfo()
-            {
-                Email = Email,
-                FirstName = FirstName,
-                LastName = LastName,
-                Phone = Phone
-            };
-
-            return !contactInfo.IsMatch(ContactMapper.Map(Contact));
-        }
-    }
+    private bool HasUnsavedChanges => Contact is null || !ContactInfo.IsMatch(ContactMapper.Map(Contact));
 }
