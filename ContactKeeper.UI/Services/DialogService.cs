@@ -37,7 +37,8 @@ internal class DialogService
         var options = new DialogOptions()
         {
             Title = "Unsaved Changes",
-            OkText = "OK",
+            OkText = "Yes",
+            CancelText = "No",
         };
 
         var msg = "You have unsaved changes. Do you want to discard them?";
@@ -54,11 +55,11 @@ internal class DialogService
     {
         var options = new DialogOptions()
         {
-            Title = "Unsaved Changes",
-            OkText = "OK",
+            Title = "Confirm Overwrite",
+            OkText = "Yes",
         };
 
-        var msg = "You have unsaved changes. Do you want to discard them?";
+        var msg = "A contact with the same first and last name already exists. Do you want to overwrite it?";
         var result = await ShowDialogAsync(msg, options);
         args.SetResult(result == true);
     }
