@@ -18,20 +18,34 @@ ContactKeeper is a contact management application for Windows Desktop that allow
 
 ## Screenshots
 
-### Contacts Overview
-![Contacts Overview](Readme-Resources/contacts-overview.png)
-
-### Add Contact
-![Add Contact](Readme-Resources/add-contact.png)
-
-### Edit Contact
-![Edit Contact](Readme-Resources/edit-contact.png)
-
-### Unsaved Changes
-![Unsaved Changes](Readme-Resources/unsaved-changes.png)
-
-### Confirm Overwrite
-![Confirm Overwrite](Readme-Resources/confirm-overwrite.png)
+<table>
+  <tr>
+    <td>
+      <img src="Readme-Resources/contacts-overview.png" alt="Contacts Overview" title="Contacts Overview" width="250"/>
+      <p align="center">Contacts Overview</p>
+    </td>
+    <td>
+      <img src="Readme-Resources/add-contact.png" alt="Add Contact" title="Add Contact" width="250"/>
+      <p align="center">Add Contact</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="Readme-Resources/edit-contact.png" alt="Edit Contact" title="Edit Contact" width="250"/>
+      <p align="center">Edit Contact</p>
+    </td>
+    <td>
+      <img src="Readme-Resources/unsaved-changes.png" alt="Unsaved Changes" title="Unsaved Changes" width="250"/>
+      <p align="center">Unsaved Changes</p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <img src="Readme-Resources/confirm-overwrite.png" alt="Confirm Overwrite" title="Confirm Overwrite" width="250"/>
+      <p align="center">Confirm Overwrite</p>
+    </td>
+  </tr>
+</table>
 
 ## Dependencies
 
