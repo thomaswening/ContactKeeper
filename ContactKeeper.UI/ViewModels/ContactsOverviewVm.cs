@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using ContactKeeper.Core.Interfaces;
+using ContactKeeper.UI.Events;
 using ContactKeeper.UI.Utilities;
 
 using Serilog;

@@ -1,4 +1,6 @@
-﻿namespace ContactKeeper.UI.ViewModels;
+﻿using ContactKeeper.UI.ViewModels;
+
+namespace ContactKeeper.UI.Events;
 
 /// <summary>
 /// Event arguments for the <see cref="EditContactRequested"/> event.
