@@ -85,4 +85,19 @@ public class DummyContactService : IContactService
             return existingContact;
         });
     }
+
+    /// </inheritdoc>
+    public async Task<IEnumerable<Contact>> FindContact(ContactInfo contactInfo)
+    {
+        return await Task.Run(() =>
+        {
+            var foundContacts = Contacts.Where(c =>
+                (contactInfo.FirstName is null || c.FirstName == contactInfo.FirstName) &&
+                (contactInfo.LastName is null || c.LastName == contactInfo.LastName) &&
+                (contactInfo.Email is null || c.Email == contactInfo.Email) &&
+                (contactInfo.Phone is null || c.Phone == contactInfo.Phone));
+
+            return foundContacts;
+        });
+    }
 }

@@ -26,6 +26,15 @@ public interface IContactService
     Task<Contact?> GetContactAsync(Guid id);
 
     /// <summary>
+    /// Finds a contact by contact information.
+    /// </summary>
+    /// <param name="contactInfo">The contact information to search for.
+    /// Only non-<see langword="null"/> properties are used for searching.</param>
+    /// <returns>A task returning an <see cref="IEnumerable{Contact}"/> of the contacts found.
+    /// If no contacts are found, an empty collection is returned.</returns>
+    Task<IEnumerable<Contact>> FindContact(ContactInfo contactInfo);
+
+    /// <summary>
     /// Adds a contact.
     /// </summary>
     /// <param name="contact">The contact to add.</param>

@@ -177,4 +177,35 @@ public class ContactService(ILogger logger, IContactRepository repository) : ICo
             throw;
         }
     }
+
+    /// </inheritdoc>
+    public async Task<IEnumerable<Contact>> FindContact(ContactInfo contactInfo)
+    {
+        try
+        {
+            logger.Information("Finding contact.");
+
+            if (Contacts is null)
+            {
+                throw new InvalidOperationException("Contacts have not been initialized.");
+            }
+
+            var foundContacts = await Task.Run(() =>
+            {
+                return Contacts.Where(c =>
+                    (contactInfo.FirstName is null || c.FirstName == contactInfo.FirstName) &&
+                    (contactInfo.LastName is null || c.LastName == contactInfo.LastName) &&
+                    (contactInfo.Email is null || c.Email == contactInfo.Email) &&
+                    (contactInfo.Phone is null || c.Phone == contactInfo.Phone)
+                );
+            });
+
+            return foundContacts;
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "Failed to find contact.");
+            return [];
+        }
+    }
 }
