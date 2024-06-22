@@ -14,22 +14,26 @@ using ContactKeeper.UI.Utilities;
 using Serilog;
 
 namespace ContactKeeper.UI.ViewModels;
+
 internal partial class ContactsOverviewVm(IContactService contactService) : ObservableObject
 {
     private readonly IContactService contactService = contactService ?? throw new ArgumentNullException(nameof(contactService));
+
+    public event EventHandler? AddContactRequested;
+    public event EventHandler<EditContactEventArgs>? EditContactRequested;
 
     [ObservableProperty]
     private ObservableCollection<ContactVm> contacts = [];
 
     public async Task InitializeContacts()
     {
-        Contacts = new ObservableCollection<ContactVm>(ContactHelper.Map(await contactService.GetContactsAsync()));
+        Contacts = new ObservableCollection<ContactVm>(ContactMapper.Map(await contactService.GetContactsAsync()));
     }
 
     [RelayCommand]
     private void AddContact()
     {
-        throw new NotImplementedException();
+        AddContactRequested?.Invoke(this, EventArgs.Empty);
     }
 
     [RelayCommand(CanExecute = nameof(IsContactNotNull))]
@@ -44,9 +48,8 @@ internal partial class ContactsOverviewVm(IContactService contactService) : Obse
 
     [RelayCommand(CanExecute = nameof(IsContactNotNull))]
     private void EditContact(ContactVm contact)
-    {
-        throw new NotImplementedException();
-
+    {        
+        EditContactRequested?.Invoke(this, new EditContactEventArgs(contact));
     }
 
     private static bool IsContactNotNull(ContactVm? contact) => contact is not null;
