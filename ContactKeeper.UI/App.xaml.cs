@@ -7,6 +7,7 @@ using ContactKeeper.Core.Interfaces;
 using ContactKeeper.Core.Services;
 using ContactKeeper.Infrastructure.Repositories;
 using ContactKeeper.Infrastructure.Utilities;
+using ContactKeeper.UI.Services;
 using ContactKeeper.UI.Utilities;
 using ContactKeeper.UI.ViewModels;
 using ContactKeeper.UI.Views;
@@ -24,6 +25,7 @@ public partial class App : Application
     private const string ApplicationName = "ContactKeeper";
     private readonly ILogger logger;
     private readonly IContactService contactService;
+    private readonly DialogService dialogService;
     private readonly ViewModelFactory viewModelFactory;
 
     public App()
@@ -31,7 +33,8 @@ public partial class App : Application
         logger = InitializeSeriLogger();
         //contactService = new DummyContactService();
         contactService = InitializeContactService(logger);
-        viewModelFactory = new ViewModelFactory(contactService);
+        dialogService = new DialogService();
+        viewModelFactory = new ViewModelFactory(contactService, dialogService, logger);
     }
 
     private static ContactService InitializeContactService(ILogger logger)
