@@ -13,7 +13,7 @@ namespace ContactKeeper.UI.Utilities;
 /// <summary>
 /// Contains helper methods for mapping between <see cref="Contact"/> and <see cref="ContactVm"/> objects.
 /// </summary>
-internal static class ContactHelper
+internal static class ContactMapper
 {
     /// <summary>
     /// Maps a <see cref="Contact"/> object to a <see cref="ContactVm"/> object.
