@@ -43,14 +43,11 @@ public class ContactInfo
 
 
     /// <summary>
-    /// Determines whether the provided <see cref="ContactVm"/> object matches the provided <see cref="ContactQueryInfo"/> object.
+    /// Determines whether the provided <see cref="Contact"/> object matches the information in this <see cref="ContactInfo"/> object.
+    /// Only the properties that are not null in this object are used for comparison.
     /// </summary>
-    /// <param name="contact">The contact view model to compare.</param>
-    /// <param name="queryInfo">The contact query information to compare against.</param>
-    /// <returns>True if the contact view model matches the query information, false otherwise.</returns>
-    /// <remarks>
-    /// Only the properties of the contact view model that are not null in the query information are compared.
-    /// </remarks>
+    /// <param name="contact">The contact to compare against.</param>
+    /// <returns>True if the contact matches the information in this object; otherwise, false.</returns>
     public bool IsMatch(Contact contact)
     {
         return (FirstName is null || contact.FirstName.Equals(FirstName, StringComparison.OrdinalIgnoreCase)) &&
