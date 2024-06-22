@@ -34,12 +34,26 @@ internal class ViewModelFactory
         this.dialogService = dialogService;
         this.logger = logger;
     }
-{
+
+    public async Task<MainWindowVm> CreateMainWindowVmAsync()
+    {        
+        var contactsOverviewVm = await CreateContactsOverviewVmAsync();
+        navigationService.RegisterViewModel(contactsOverviewVm);
+
+        var mainWindowVm = new MainWindowVm(contactsOverviewVm);
+        navigationService.CurrentViewModelChanged += (s, e) => mainWindowVm.CurrentViewModel = navigationService.CurrentViewModel;
+
+        return mainWindowVm;
+    }
+
     public async Task<ContactsOverviewVm> CreateContactsOverviewVmAsync()
     {
-        var vm = new ContactsOverviewVm(contactService);
-        await vm.InitializeContacts();
-        return vm;
+        var viewModel = new ContactsOverviewVm(contactService);
+        viewModel.AddContactRequested += (s, e) => navigationService.RegisterViewModel(CreateEditContactVm());
+        viewModel.EditContactRequested += (s, e) => navigationService.RegisterViewModel(CreateEditContactVm(e.Contact));
+
+        await viewModel.InitializeContacts();
+        return viewModel;
     }
 
     public EditContactVm CreateEditContactVm(ContactVm? contact = null)
@@ -49,6 +63,7 @@ internal class ViewModelFactory
 
         viewModel.ConfirmContactOverwriteRequested += dialogService.OnConfirmContactOverwrite;
         viewModel.ConfirmCloseWithUnsavedChangesRequested += dialogService.OnConfirmCloseWithUnsavedChanges;
+        viewModel.CloseRequested += (s, e) => navigationService.UnregisterViewModel(viewModel);
 
         return viewModel;
     }

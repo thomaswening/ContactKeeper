@@ -9,15 +9,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ContactKeeper.UI.Utilities;
 
 namespace ContactKeeper.UI.ViewModels;
-internal partial class MainWindowVm(ViewModelFactory viewModelFactory) : ObservableObject
+internal partial class MainWindowVm(ObservableObject initialViewModel) : ObservableObject
 {
-    private readonly ViewModelFactory viewModelFactory = viewModelFactory ?? throw new ArgumentNullException(nameof(viewModelFactory));
-
     [ObservableProperty]
-    private ObservableObject? currentViewModel;
-
-    public async Task InitializeAsync()
-    {
-        CurrentViewModel = await viewModelFactory.CreateContactsOverviewVmAsync();
-    }
+    private ObservableObject currentViewModel = initialViewModel ?? throw new ArgumentNullException(nameof(initialViewModel));
 }

@@ -32,7 +32,6 @@ public partial class App : Application
     public App()
     {
         logger = InitializeSeriLogger();
-        //contactService = new DummyContactService();
         contactService = InitializeContactService(logger);
         dialogService = new DialogService();
         navigationService = new NavigationService();
@@ -70,13 +69,8 @@ public partial class App : Application
 
     private async void Application_Startup(object sender, StartupEventArgs e)
     {
-        var viewModel = new MainWindowVm(viewModelFactory);
-        await viewModel.InitializeAsync();
-
-        var mainWindow = new MainWindow()
-        {
-            DataContext = viewModel
-        };
+        var viewModel = await viewModelFactory.CreateMainWindowVmAsync();
+        var mainWindow = new MainWindow() { DataContext = viewModel };
         mainWindow.Show();
     }
 }
