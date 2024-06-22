@@ -46,6 +46,7 @@ internal partial class EditContactVm : ValidatedViewModel
 
     public event EventHandler<AwaitableEventArgs<bool>>? ConfirmContactOverwriteRequested;
     public event EventHandler<AwaitableEventArgs<bool>>? ConfirmCloseWithUnsavedChangesRequested;
+    public event EventHandler? CloseRequested;
 
     public EditContactVm(IContactService contactService, IEditContactVmValidator validator, ILogger logger, ContactVm? contact = null) : base(validator)
     {
@@ -91,41 +92,44 @@ internal partial class EditContactVm : ValidatedViewModel
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task Save()
     {
-        var contactInfo = new ContactInfo()
+        if (HasUnsavedChanges)
         {
-            Email = Email,
-            FirstName = FirstName,
-            LastName = LastName,
-            Phone = Phone
-        };
-
-        // Is there already a contact with the same name?
-        var duplicateId = await FindDuplicateContact();
-
-        if (duplicateId is not null && Contact?.Id != duplicateId)
-        {
-            var isOverwrite = await ConfirmOverwriteAsync();
-            if (!isOverwrite)
-                return;
-
-            // Delete the contact being edited and instead update the existing one
-            if (Contact is not null)
+            var contactInfo = new ContactInfo()
             {
-                await contactService.DeleteContactAsync(Contact.Id);
+                Email = Email,
+                FirstName = FirstName,
+                LastName = LastName,
+                Phone = Phone
+            };
+
+            // Is there already a contact with the same name?
+            var duplicateId = await FindDuplicateContact();
+
+            if (duplicateId is not null && Contact?.Id != duplicateId)
+            {
+                var isOverwrite = await ConfirmOverwriteAsync();
+                if (!isOverwrite)
+                    return;
+
+                // Delete the contact being edited and instead update the existing one
+                if (Contact is not null)
+                {
+                    await contactService.DeleteContactAsync(Contact.Id);
+                }
+
+                await contactService.UpdateContactAsync(duplicateId.Value, contactInfo);
             }
+            else if (Contact is not null)
+            {
+                await contactService.UpdateContactAsync(Contact.Id, contactInfo);
+            }
+            else
+            {
+                await contactService.AddContactAsync(contactInfo);
+            }
+        }        
 
-            await contactService.UpdateContactAsync(duplicateId.Value, contactInfo);
-        }
-        else if (Contact is not null)
-        {
-            await contactService.UpdateContactAsync(Contact.Id, contactInfo);
-        }
-        else
-        {
-            await contactService.AddContactAsync(contactInfo);
-        }
-
-        // eventAggregator.Publish(new NavigationRequest(typeof(ContactsOverviewVm)));
+        CloseRequested?.Invoke(this, EventArgs.Empty);
     }
 
     private async Task<Guid?> FindDuplicateContact()
@@ -170,7 +174,7 @@ internal partial class EditContactVm : ValidatedViewModel
             if (!isClose) return;
         }
 
-        //eventAggregator.Publish(new NavigationRequest(typeof(ContactsOverviewVm)));
+        CloseRequested?.Invoke(this, EventArgs.Empty);
     }
 
     private bool HasUnsavedChanges
