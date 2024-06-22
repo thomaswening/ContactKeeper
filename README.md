@@ -1,5 +1,7 @@
 # ContactKeeper
 
+![Contacts Overview](Readme-Resources/contacts-overview.png)
+
 ContactKeeper is a contact management application for Windows Desktop that allows users to store and manage their contacts. It is built using a layered architecture and follows the MVVM (Model-View-ViewModel) design pattern. The application uses JSON as the data storage format and implements a repository pattern for data access.
 
 ## Features
@@ -21,27 +23,21 @@ ContactKeeper is a contact management application for Windows Desktop that allow
 <table>
   <tr>
     <td>
-      <img src="Readme-Resources/contacts-overview.png" alt="Contacts Overview" title="Contacts Overview" width="250"/>
-      <p align="center">Contacts Overview</p>
-    </td>
-    <td>
-      <img src="Readme-Resources/add-contact.png" alt="Add Contact" title="Add Contact" width="250"/>
+      <img src="Readme-Resources/add-contact.png" alt="Add Contact" title="Add Contact" width="300"/>
       <p align="center">Add Contact</p>
     </td>
-  </tr>
-  <tr>
     <td>
-      <img src="Readme-Resources/edit-contact.png" alt="Edit Contact" title="Edit Contact" width="250"/>
+      <img src="Readme-Resources/edit-contact.png" alt="Edit Contact" title="Edit Contact" width="300"/>
       <p align="center">Edit Contact</p>
     </td>
+  </tr>
+  <tr>    
     <td>
-      <img src="Readme-Resources/unsaved-changes.png" alt="Unsaved Changes" title="Unsaved Changes" width="250"/>
+      <img src="Readme-Resources/unsaved-changes.png" alt="Unsaved Changes" title="Unsaved Changes" width="300"/>
       <p align="center">Unsaved Changes</p>
     </td>
-  </tr>
-  <tr>
-    <td colspan="2">
-      <img src="Readme-Resources/confirm-overwrite.png" alt="Confirm Overwrite" title="Confirm Overwrite" width="250"/>
+    <td>
+      <img src="Readme-Resources/confirm-overwrite.png" alt="Confirm Overwrite" title="Confirm Overwrite" width="300"/>
       <p align="center">Confirm Overwrite</p>
     </td>
   </tr>
