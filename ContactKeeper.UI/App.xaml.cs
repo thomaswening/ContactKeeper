@@ -26,6 +26,7 @@ public partial class App : Application
     private readonly ILogger logger;
     private readonly IContactService contactService;
     private readonly DialogService dialogService;
+    private readonly NavigationService navigationService;
     private readonly ViewModelFactory viewModelFactory;
 
     public App()
@@ -34,7 +35,8 @@ public partial class App : Application
         //contactService = new DummyContactService();
         contactService = InitializeContactService(logger);
         dialogService = new DialogService();
-        viewModelFactory = new ViewModelFactory(contactService, dialogService, logger);
+        navigationService = new NavigationService();
+        viewModelFactory = new ViewModelFactory(navigationService, contactService, dialogService, logger);
     }
 
     private static ContactService InitializeContactService(ILogger logger)
