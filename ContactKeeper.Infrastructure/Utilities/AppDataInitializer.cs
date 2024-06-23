@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ContactKeeper.Core.Exceptions;
+
 using Serilog;
 
 namespace ContactKeeper.Infrastructure.Utilities;
@@ -57,13 +59,11 @@ public class AppDataInitializer(IFileSystem fileSystem, ILogger logger)
         }
         catch (UnauthorizedAccessException ex)
         {
-           logger.Error(ex, $"Failed to create directory {baseDirectory} due to unauthorized access.");
-           throw new UnauthorizedAccessException("Failed to create directory due to unauthorized access.", ex);
+            throw ExceptionHelper.LogAndThrow(logger, $"Failed to create directory {baseDirectory} due to lack of access.", ex);
         }
         catch (Exception ex)
         {
-            logger.Error(ex, $"Failed to create directory {baseDirectory}.");
-            throw new Exception($"Failed to create directory {baseDirectory}.", ex);
+            throw ExceptionHelper.LogAndThrow(logger, $"Failed to create directory {baseDirectory}.", ex);
         }
     }
 }

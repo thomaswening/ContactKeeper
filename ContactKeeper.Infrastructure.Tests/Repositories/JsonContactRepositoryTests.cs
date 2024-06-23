@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using AutoBogus;
 
+using ContactKeeper.Core.Exceptions;
 using ContactKeeper.Core.Models;
 using ContactKeeper.Infrastructure.Repositories;
 
@@ -115,7 +116,7 @@ namespace ContactKeeper.Infrastructure.Tests.Repositories
             ((MockFileSystem)fileSystem).AddFile(TestFileName, mockFileData);
 
             // Act & Assert
-            Assert.ThrowsAsync<JsonException>(async () => await repository.GetContactsAsync());
+            Assert.ThrowsAsync<RepositoryCorruptedException>(async () => await repository.GetContactsAsync());
         }
 
         [Test]

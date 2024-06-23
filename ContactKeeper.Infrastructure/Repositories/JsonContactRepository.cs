@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
+using ContactKeeper.Core.Exceptions;
 using ContactKeeper.Core.Interfaces;
 using ContactKeeper.Core.Models;
 
@@ -85,18 +86,15 @@ public class JsonContactRepository : IContactRepository
         }
         catch (JsonException ex)
         {
-            logger.Error(ex, "Contact data file is invalid.");
-            throw new JsonException("Contact data file is invalid.", ex);
+            throw ExceptionHelper.LogAndThrow<RepositoryCorruptedException>(logger, "Contact data file is invalid.", ex);
         }
         catch (UnauthorizedAccessException ex)
         {
-            logger.Error(ex, "Read access to the contact data file is denied.");
-            throw new UnauthorizedAccessException("Read access to the contact data file is denied.", ex);
+            throw ExceptionHelper.LogAndThrow(logger, "Read access to the contact data file is denied.", ex);
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "An error occurred while retrieving contacts.");
-            throw new Exception("An error occurred while retrieving contacts.", ex);
+            throw ExceptionHelper.LogAndThrow(logger, "An error occurred while retrieving contacts.", ex);
         }
         finally
         {
@@ -126,18 +124,15 @@ public class JsonContactRepository : IContactRepository
         }
         catch (JsonException ex)
         {
-            logger.Error(ex, "Contact data file is invalid.");
-            throw new JsonException("Contact data file is invalid.", ex);
+            throw ExceptionHelper.LogAndThrow<RepositoryCorruptedException>(logger, "Contact data file is invalid.", ex);
         }
         catch (UnauthorizedAccessException ex)
         {
-            logger.Error(ex, "Write access to the contact data file is denied.");
-            throw new UnauthorizedAccessException("Write access to the contact data file is denied.", ex);
+            throw ExceptionHelper.LogAndThrow(logger, "Write access to the contact data file is denied.", ex);
         }
         catch (Exception ex)
         {
-            logger.Error(ex, "An error occurred while saving contacts.");
-            throw new InvalidOperationException("An error occurred while saving contacts.", ex);
+            throw ExceptionHelper.LogAndThrow(logger, "An error occurred while saving contacts.", ex);
         }
         finally
         {
