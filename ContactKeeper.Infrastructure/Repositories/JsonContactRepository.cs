@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -20,18 +21,21 @@ public class JsonContactRepository : IContactRepository
     private static readonly SemaphoreSlim semaphoreSlim = new(1, 1);
     private readonly string filePath;
     private readonly ILogger logger;
+    private readonly IFileSystem fileSystem;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonContactRepository"/> class.
     /// </summary>
     /// <param name="logger">The logger to use for logging.</param>
+    /// <param name="fileSystem">The file system to use for file operations.</param>
     /// <param name="filePath">The path to the JSON file to use for storing contacts.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="logger"/> or <paramref name="filePath"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="filePath"/> is empty or whitespace.</exception>
-    public JsonContactRepository(ILogger logger, string filePath)
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="logger"/>, <paramref name="filePath"/>, or <paramref name="fileSystem"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="filePath"/> is empty or whitespace.</exception>    
+    public JsonContactRepository(string filePath, IFileSystem fileSystem, ILogger logger)
     {
         ArgumentNullException.ThrowIfNull(filePath);
         ArgumentNullException.ThrowIfNull(logger);
+        ArgumentNullException.ThrowIfNull(fileSystem);
 
         if (string.IsNullOrWhiteSpace(filePath))
         {
@@ -40,6 +44,7 @@ public class JsonContactRepository : IContactRepository
 
         this.filePath = filePath;
         this.logger = logger;
+        this.fileSystem = fileSystem;
     }
 
     /// <summary>
@@ -53,7 +58,7 @@ public class JsonContactRepository : IContactRepository
     {
         logger.Information($"Attempting to retrieve contacts from {filePath}");
 
-        if (!File.Exists(filePath))
+        if (!fileSystem.File.Exists(filePath))
         {
             logger.Warning($"File {filePath} not found. Creating a new file.");
             await SaveContactsAsync([]);
@@ -63,8 +68,17 @@ public class JsonContactRepository : IContactRepository
 
         try
         {
-            using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var contacts = await JsonSerializer.DeserializeAsync<List<Contact>>(stream) ?? [];
+            using var stream = fileSystem.File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+            List<Contact> contacts;
+            if (stream.Length == 0)
+            {
+                contacts = [];
+            }
+            else
+            {
+                contacts = await JsonSerializer.DeserializeAsync<List<Contact>>(stream) ?? [];
+            }
 
             logger.Information($"Successfully retrieved {contacts.Count} contacts.");
             return contacts;
@@ -105,7 +119,7 @@ public class JsonContactRepository : IContactRepository
             logger.Information("Attempting to save contacts to {FilePath}", filePath);
 
             await semaphoreSlim.WaitAsync();
-            using var outputStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+            using var outputStream = fileSystem.File.Open(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
             await JsonSerializer.SerializeAsync(outputStream, contacts);
 
             logger.Information("Successfully saved contacts.");
@@ -127,8 +141,7 @@ public class JsonContactRepository : IContactRepository
         }
         finally
         {
-
-           semaphoreSlim.Release();
+            semaphoreSlim.Release();
         }
     }
 }

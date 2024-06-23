@@ -1,6 +1,7 @@
 ﻿using System.Configuration;
 using System.Data;
 using System.IO;
+using System.IO.Abstractions;
 using System.Windows;
 
 using ContactKeeper.Core.Interfaces;
@@ -42,9 +43,10 @@ public partial class App : Application
     {
         var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         var appDirectory = Path.Combine(appDataPath, ApplicationName);
-        var filePath = AppDataInitializer.Initialize(appDirectory);
 
-        var jsonContactRepository = new JsonContactRepository(logger, filePath);
+        var fileSystem = new FileSystem();
+        var filePath = new AppDataInitializer(fileSystem, logger).Initialize(appDirectory);
+        var jsonContactRepository = new JsonContactRepository(filePath, fileSystem, logger);
         var contactService = new ContactService(logger, jsonContactRepository);
 
         return contactService;

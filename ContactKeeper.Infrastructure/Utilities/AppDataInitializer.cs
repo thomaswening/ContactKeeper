@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,9 +12,14 @@ namespace ContactKeeper.Infrastructure.Utilities;
 /// <summary>
 /// Represents a utility for initializing application data.
 /// </summary>
+/// <param name="fileSystem">The file system to use for file operations.</param>
 /// <param name="logger">The logger to use for logging.</param>
-public class AppDataInitializer(ILogger logger)
+/// <exception cref="ArgumentNullException">Thrown when <paramref name="fileSystem"/> or <paramref name="logger"/> is <see langword="null"/>.</exception>
+public class AppDataInitializer(IFileSystem fileSystem, ILogger logger)
 {
+    private readonly ILogger logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly IFileSystem fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+
     /// <summary>
     /// Initializes the application data.
     /// </summary>
@@ -33,12 +39,12 @@ public class AppDataInitializer(ILogger logger)
         }
 
         EnsureDirectoryExists(baseDirectory);
-        return Path.Combine(baseDirectory, defaultFileName);
+        return fileSystem.Path.Combine(baseDirectory, defaultFileName);
     }
 
     private void EnsureDirectoryExists(string baseDirectory)
     {
-        if (Directory.Exists(baseDirectory))
+        if (fileSystem.Directory.Exists(baseDirectory))
         {
             return;
         }
@@ -46,7 +52,7 @@ public class AppDataInitializer(ILogger logger)
         try
         {
             logger.Information($"Directory {baseDirectory} does not exist. Creating directory.");
-            Directory.CreateDirectory(baseDirectory);
+            fileSystem.Directory.CreateDirectory(baseDirectory);
             logger.Information($"Directory {baseDirectory} created.");
         }
         catch (UnauthorizedAccessException ex)
