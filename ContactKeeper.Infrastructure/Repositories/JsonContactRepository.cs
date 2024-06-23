@@ -21,6 +21,13 @@ public class JsonContactRepository : IContactRepository
     private readonly string filePath;
     private readonly ILogger logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonContactRepository"/> class.
+    /// </summary>
+    /// <param name="logger">The logger to use for logging.</param>
+    /// <param name="filePath">The path to the JSON file to use for storing contacts.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="logger"/> or <paramref name="filePath"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="filePath"/> is empty or whitespace.</exception>
     public JsonContactRepository(ILogger logger, string filePath)
     {
         ArgumentNullException.ThrowIfNull(filePath);
@@ -28,7 +35,7 @@ public class JsonContactRepository : IContactRepository
 
         if (string.IsNullOrWhiteSpace(filePath))
         {
-            throw new ArgumentException("Value cannot be null or whitespace.", nameof(filePath));
+            throw new ArgumentException("Value cannot be empty or whitespace.", nameof(filePath));
         }
 
         this.filePath = filePath;
@@ -39,36 +46,43 @@ public class JsonContactRepository : IContactRepository
     /// Gets the contacts from the JSON file.
     /// </summary>
     /// <returns>A task returning an <see cref="IEnumerable{Contact}"/> of the contacts in the JSON file.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the contact data file is invalid.</exception>
-    /// <exception cref="FileNotFoundException">Thrown when the contact data file is not found.</exception>
+    /// <exception cref="JsonException">Thrown when the contact data file is invalid.</exception>
+    /// <exception cref="UnauthorizedAccessException">Thrown when read access to the contact data file is denied.</exception>
+    /// <exception cref="Exception">Thrown when an error occurs while retrieving contacts.</exception>
     public async Task<IEnumerable<Contact>> GetContactsAsync()
     {
+        logger.Information($"Attempting to retrieve contacts from {filePath}");
+
+        if (!File.Exists(filePath))
+        {
+            logger.Warning($"File {filePath} not found. Creating a new file.");
+            await SaveContactsAsync([]);
+        }
+
+        await semaphoreSlim.WaitAsync();
+
         try
         {
-            logger.Information("Attempting to retrieve contacts from {FilePath}", filePath);
-
-            if (!File.Exists(filePath))
-            {
-                logger.Warning("File {FilePath} not found. Creating a new file.", filePath);
-                await SaveContactsAsync(Enumerable.Empty<Contact>());
-            }
-
-            await semaphoreSlim.WaitAsync();
             using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var contacts = await JsonSerializer.DeserializeAsync<List<Contact>>(stream) ?? new List<Contact>();
+            var contacts = await JsonSerializer.DeserializeAsync<List<Contact>>(stream) ?? [];
 
-            logger.Information("Successfully retrieved {Count} contacts.", contacts.Count);
+            logger.Information($"Successfully retrieved {contacts.Count} contacts.");
             return contacts;
         }
         catch (JsonException ex)
         {
             logger.Error(ex, "Contact data file is invalid.");
-            throw new InvalidOperationException("Contact data file is invalid.", ex);
+            throw new JsonException("Contact data file is invalid.", ex);
         }
-        catch (Exception e)
+        catch (UnauthorizedAccessException ex)
         {
-            logger.Error(e, "An error occurred while getting contacts.");
-            throw new InvalidOperationException("An error occurred while getting contacts.", e);
+            logger.Error(ex, "Read access to the contact data file is denied.");
+            throw new UnauthorizedAccessException("Read access to the contact data file is denied.", ex);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "An error occurred while retrieving contacts.");
+            throw new Exception("An error occurred while retrieving contacts.", ex);
         }
         finally
         {
@@ -81,7 +95,9 @@ public class JsonContactRepository : IContactRepository
     /// </summary>
     /// <param name="contacts">Contacts to save to the JSON file.</param>
     /// <returns>A task representing the saving of the contacts.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the contact data file is invalid.</exception>
+    /// <exception cref="JsonException">Thrown when the contact data file is invalid.</exception>
+    /// <exception cref="UnauthorizedAccessException">Thrown when write access to the contact data file is denied.</exception>
+    /// <exception cref="Exception">Thrown when an error occurs while saving contacts.</exception>
     public async Task SaveContactsAsync(IEnumerable<Contact> contacts)
     {
         try
@@ -97,16 +113,22 @@ public class JsonContactRepository : IContactRepository
         catch (JsonException ex)
         {
             logger.Error(ex, "Contact data file is invalid.");
-            throw new InvalidOperationException("Contact data file is invalid.", ex);
+            throw new JsonException("Contact data file is invalid.", ex);
         }
-        catch (Exception e)
+        catch (UnauthorizedAccessException ex)
         {
-            logger.Error(e, "An error occurred while saving contacts.");
-            throw new InvalidOperationException("An error occurred while saving contacts.", e);
+            logger.Error(ex, "Write access to the contact data file is denied.");
+            throw new UnauthorizedAccessException("Write access to the contact data file is denied.", ex);
+        }
+        catch (Exception ex)
+        {
+            logger.Error(ex, "An error occurred while saving contacts.");
+            throw new InvalidOperationException("An error occurred while saving contacts.", ex);
         }
         finally
         {
-            semaphoreSlim.Release();
+
+           semaphoreSlim.Release();
         }
     }
 }
