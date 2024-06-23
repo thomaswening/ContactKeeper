@@ -34,14 +34,9 @@ public class JsonContactRepository : IContactRepository
     /// <exception cref="ArgumentException">Thrown when <paramref name="filePath"/> is empty or whitespace.</exception>    
     public JsonContactRepository(string filePath, IFileSystem fileSystem, ILogger logger)
     {
-        ArgumentNullException.ThrowIfNull(filePath);
-        ArgumentNullException.ThrowIfNull(logger);
-        ArgumentNullException.ThrowIfNull(fileSystem);
-
-        if (string.IsNullOrWhiteSpace(filePath))
-        {
-            throw new ArgumentException("Value cannot be empty or whitespace.", nameof(filePath));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(filePath, nameof(filePath));
+        ArgumentNullException.ThrowIfNull(logger, nameof(logger));
+        ArgumentNullException.ThrowIfNull(fileSystem, nameof(fileSystem));
 
         this.filePath = filePath;
         this.logger = logger;
@@ -86,15 +81,20 @@ public class JsonContactRepository : IContactRepository
         }
         catch (JsonException ex)
         {
-            throw ExceptionHelper.LogAndThrow<RepositoryCorruptedException>(logger, "Contact data file is invalid.", ex);
+            var msg = $"Contact data file '{filePath}' is invalid.";
+            logger.Error(ex, msg);
+
+            throw new RepositoryCorruptedException(msg, ex);
         }
         catch (UnauthorizedAccessException ex)
         {
-            throw ExceptionHelper.LogAndThrow(logger, "Read access to the contact data file is denied.", ex);
+            logger.Error(ex, $"Read access to the contact data file '{filePath}' is denied.");
+            throw;
         }
         catch (Exception ex)
         {
-            throw ExceptionHelper.LogAndThrow(logger, "An error occurred while retrieving contacts.", ex);
+            logger.Error(ex, $"An error occurred while retrieving contacts from '{filePath}'.");
+            throw;
         }
         finally
         {
@@ -124,15 +124,20 @@ public class JsonContactRepository : IContactRepository
         }
         catch (JsonException ex)
         {
-            throw ExceptionHelper.LogAndThrow<RepositoryCorruptedException>(logger, "Contact data file is invalid.", ex);
+            var msg = $"Contact data file '{filePath}' is invalid.";
+            logger.Error(ex, msg);
+
+            throw new RepositoryCorruptedException(msg, ex);
         }
         catch (UnauthorizedAccessException ex)
         {
-            throw ExceptionHelper.LogAndThrow(logger, "Write access to the contact data file is denied.", ex);
+            logger.Error(ex, $"Write access to the contact data file '{filePath}' is denied.");
+            throw;
         }
         catch (Exception ex)
         {
-            throw ExceptionHelper.LogAndThrow(logger, "An error occurred while saving contacts.", ex);
+            logger.Error(ex, $"An error occurred while saving contacts to '{filePath}'.");
+            throw;
         }
         finally
         {

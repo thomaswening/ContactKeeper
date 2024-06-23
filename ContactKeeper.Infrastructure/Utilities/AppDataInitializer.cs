@@ -28,17 +28,12 @@ public class AppDataInitializer(IFileSystem fileSystem, ILogger logger)
     /// <param name="baseDirectory">The base directory to use for the application data.</param>
     /// <param name="defaultFileName">The default file name to use for the application data.</param>
     /// <returns>The full path to the application data file.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="baseDirectory"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="baseDirectory"/> is empty or whitespace.</exception>
     /// <exception cref="UnauthorizedAccessException">Thrown when the application does not have access to create the directory.</exception>
     /// <exception cref="Exception">Thrown when an error occurs while creating the directory.</exception>
     public string Initialize(string baseDirectory, string defaultFileName = "contacts.json")
     {
-        ArgumentNullException.ThrowIfNull(baseDirectory);
-        if (string.IsNullOrWhiteSpace(baseDirectory))
-        {
-            throw new ArgumentException("Value cannot be empty or whitespace.", nameof(baseDirectory));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(baseDirectory, nameof(baseDirectory));
 
         EnsureDirectoryExists(baseDirectory);
         return fileSystem.Path.Combine(baseDirectory, defaultFileName);
@@ -59,11 +54,13 @@ public class AppDataInitializer(IFileSystem fileSystem, ILogger logger)
         }
         catch (UnauthorizedAccessException ex)
         {
-            throw ExceptionHelper.LogAndThrow(logger, $"Failed to create directory {baseDirectory} due to lack of access.", ex);
+            logger.Error(ex, $"Failed to create directory {baseDirectory} due to lack of access.");
+            throw;
         }
         catch (Exception ex)
         {
-            throw ExceptionHelper.LogAndThrow(logger, $"Failed to create directory {baseDirectory}.", ex);
+            logger.Error(ex, $"Failed to create directory {baseDirectory}.");
+            throw;
         }
     }
 }
