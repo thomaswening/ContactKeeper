@@ -20,9 +20,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Readme-Resources\unsaved-changes.png = Readme-Resources\unsaved-changes.png
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactKeeper.Infrastructure.Tests", "ContactKeeper.Infrastructure.Tests\ContactKeeper.Infrastructure.Tests.csproj", "{7EA5665E-BB27-488C-A9E2-F47CF43BB778}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContactKeeper.Infrastructure.Tests", "ContactKeeper.Infrastructure.Tests\ContactKeeper.Infrastructure.Tests.csproj", "{7EA5665E-BB27-488C-A9E2-F47CF43BB778}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactKeeper.Core.Tests", "ContactKeeper.Core.Tests\ContactKeeper.Core.Tests.csproj", "{6EED390B-1A9B-45A5-A961-B6C65F6C2E23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContactKeeper.Core.Tests", "ContactKeeper.Core.Tests\ContactKeeper.Core.Tests.csproj", "{6EED390B-1A9B-45A5-A961-B6C65F6C2E23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactKeeper.UI.Tests", "ContactKeeper.UI.Tests\ContactKeeper.UI.Tests.csproj", "{917DCEEF-76FB-45E5-A15C-DABE79E7E2A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{6EED390B-1A9B-45A5-A961-B6C65F6C2E23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EED390B-1A9B-45A5-A961-B6C65F6C2E23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EED390B-1A9B-45A5-A961-B6C65F6C2E23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{917DCEEF-76FB-45E5-A15C-DABE79E7E2A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{917DCEEF-76FB-45E5-A15C-DABE79E7E2A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{917DCEEF-76FB-45E5-A15C-DABE79E7E2A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{917DCEEF-76FB-45E5-A15C-DABE79E7E2A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
