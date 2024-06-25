@@ -25,14 +25,12 @@ public partial class DialogVm : ObservableObject
 
     public event EventHandler? CloseRequested;
 
-    public DialogVm(string message, DialogOptions dialogOptions, Action? okAction = null, Action? cancelAction = null)
+    public DialogVm(string message, DialogOptions? dialogOptions = null, Action? okAction = null, Action? cancelAction = null)
     {
-        if (string.IsNullOrEmpty(message))
-        {
-            throw new ArgumentException($"'{nameof(message)}' cannot be null or empty.", nameof(message));
-        }
-
-        ArgumentNullException.ThrowIfNull(dialogOptions);
+        ArgumentException.ThrowIfNullOrEmpty(message, nameof(message));
+        
+        // Use default options if none are provided
+        dialogOptions ??= new DialogOptions();
 
         Message = message;
         Title = dialogOptions.Title;
