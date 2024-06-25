@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using ContactKeeper.Core.Exceptions;
 using ContactKeeper.Core.Interfaces;
 using ContactKeeper.Core.Models;
 using ContactKeeper.Core.Services;
+using ContactKeeper.Core.Tests.Fakers;
 using ContactKeeper.Core.Utilities;
 
 using NSubstitute;
@@ -42,7 +44,7 @@ public class ContactServiceTests
     public async Task AddContactAsync_WhenCalled_ReturnsAddedContact()
     {
         // Arrange
-        var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
+        var contactInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
 
         // Act
         var result = await contactService.AddContactAsync(contactInfo);
@@ -61,7 +63,7 @@ public class ContactServiceTests
     public async Task AddContactAsync_WhenCalled_AddsContact()
     {
         // Arrange
-        var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
+        var contactInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
 
         // Act
         await contactService.AddContactAsync(contactInfo);
@@ -81,7 +83,7 @@ public class ContactServiceTests
     public void AddContactAsync_WhenRepositoryFailsToSave_ThrowsException()
     {
         // Arrange
-        var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
+        var contactInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
         repository.SaveContactsAsync(Arg.Any<List<Contact>>()).Throws(new Exception());
 
         // Act
@@ -96,13 +98,10 @@ public class ContactServiceTests
     {
         // Arrange
         var numberOfRandomContacts = 10;
-        var randomContactInfos = AutoFaker.Generate<Contact>(numberOfRandomContacts)
-                                          .Select(ci => ContactInfo.FromContact(ci));
+        var randomContactInfos = ContactInfoFaker.GetFakes(numberOfRandomContacts, ContactInfoFaker.PropertiesNotNull);
+        await AddContacts(randomContactInfos);
 
-        var tasks = randomContactInfos.Select(async c => await contactService.AddContactAsync(c));
-        await Task.WhenAll(tasks);
-
-        var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
+        var contactInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
         var contact = await contactService.AddContactAsync(contactInfo);
 
         // Act
@@ -122,7 +121,7 @@ public class ContactServiceTests
     public async Task DeleteContactAsync_WhenCalled_ReturnsDeletedId()
     {
         // Arrange
-        var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
+        var contactInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
         var contact = await contactService.AddContactAsync(contactInfo);
 
         // Act
@@ -136,7 +135,7 @@ public class ContactServiceTests
     public async Task DeleteContactAsync_WhenCalledWithNonExistentId_ReturnsNull()
     {
         // Arrange
-        var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
+        var contactInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
         await contactService.AddContactAsync(contactInfo);
 
         // Act
@@ -151,13 +150,10 @@ public class ContactServiceTests
     {
         // Arrange
         var numberOfRandomContacts = 10;
-        var randomContactInfos = AutoFaker.Generate<Contact>(numberOfRandomContacts)
-                                          .Select(ci => ContactInfo.FromContact(ci));
+        var randomContactInfos = ContactInfoFaker.GetFakes(numberOfRandomContacts, ContactInfoFaker.PropertiesNotNull);
+        await AddContacts(randomContactInfos);
 
-        var tasks = randomContactInfos.Select(async c => await contactService.AddContactAsync(c));
-        await Task.WhenAll(tasks);
-
-        var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
+        var contactInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
         var contact = await contactService.AddContactAsync(contactInfo);
 
         // Act
@@ -177,11 +173,8 @@ public class ContactServiceTests
     {
         // Arrange
         var numberOfRandomContacts = 10;
-        var randomContactInfos = AutoFaker.Generate<Contact>(numberOfRandomContacts)
-                                          .Select(ci => ContactInfo.FromContact(ci));
-
-        var tasks = randomContactInfos.Select(async c => await contactService.AddContactAsync(c));
-        await Task.WhenAll(tasks);
+        var randomContactInfos = ContactInfoFaker.GetFakes(numberOfRandomContacts, ContactInfoFaker.PropertiesNotNull);
+        await AddContacts(randomContactInfos);
 
         // Act
         var result = await contactService.GetContactsAsync();
@@ -210,8 +203,8 @@ public class ContactServiceTests
     public async Task UpdateContactAsync_WhenCalled_ReturnsUpdatedContact()
     {
         // Arrange
-        var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
-        var updateInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
+        var contactInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
+        var updateInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
         var originalContact = await contactService.AddContactAsync(contactInfo);
 
         // Act
@@ -229,8 +222,8 @@ public class ContactServiceTests
     public async Task UpdateContactAsync_WhenCalled_UpdatesContact()
     {
         // Arrange
-        var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
-        var updateInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
+        var contactInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
+        var updateInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
         var originalContact = await contactService.AddContactAsync(contactInfo);
 
         // Act
@@ -254,14 +247,11 @@ public class ContactServiceTests
     {
         // Arrange
         var numberOfRandomContacts = 10;
-        var randomContactInfos = AutoFaker.Generate<Contact>(numberOfRandomContacts)
-                                          .Select(ci => ContactInfo.FromContact(ci));
+        var randomContactInfos = ContactInfoFaker.GetFakes(numberOfRandomContacts, ContactInfoFaker.PropertiesNotNull);
+        await AddContacts(randomContactInfos);
 
-        var tasks = randomContactInfos.Select(async c => await contactService.AddContactAsync(c));
-        await Task.WhenAll(tasks);
-
-        var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
-        var updateInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
+        var contactInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
+        var updateInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
         var originalContact = await contactService.AddContactAsync(contactInfo);
 
         // Act
@@ -285,8 +275,8 @@ public class ContactServiceTests
     public async Task UpdateContactAsync_WhenContactNotFound_ReturnsNull()
     {
         // Arrange
-        var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
-        var updateInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
+        var contactInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
+        var updateInfo = ContactInfoFaker.GetFake(ContactInfoFaker.PropertiesNotNull);
 
         // Act
         var result = await contactService.UpdateContactAsync(Guid.NewGuid(), updateInfo);
@@ -299,11 +289,8 @@ public class ContactServiceTests
     public async Task FindContact_WhenCalled_ReturnsMatchingContacts()
     {
         // Arrange
-        var randomContactInfos = AutoFaker.Generate<Contact>(10)
-                                          .Select(ci => ContactInfo.FromContact(ci));
-
-        var tasks = randomContactInfos.Select(async c => await contactService.AddContactAsync(c));
-        await Task.WhenAll(tasks);
+        var randomContactInfos = ContactInfoFaker.GetFakes(10, ContactInfoFaker.PropertiesNotNull);
+        await AddContacts(randomContactInfos);
 
         var searchCriteria = randomContactInfos.First();
 
@@ -322,10 +309,13 @@ public class ContactServiceTests
     public async Task FindContact_WhenCalledWithNoMatchingCriteria_ReturnsEmptyEnumerable()
     {
         // Arrange
-        var nonExistentFirstname = "NonExistent";
-        var randomContactInfos = GetFakeContactsWithFirstNameDifferentFrom(nonExistentFirstname);
-        var tasks = randomContactInfos.Select(async c => await contactService.AddContactAsync(c));
-        await Task.WhenAll(tasks);
+        var nonExistentFirstname = AutoFaker.Generate<string>();
+        var randomContactInfos = ContactInfoFaker.GetFakes(10, ci =>
+        {
+            return ContactInfoFaker.PropertiesNotNull(ci) && ci.FirstName != nonExistentFirstname;
+        });
+
+        await AddContacts(randomContactInfos);
 
         var searchCriteria = new ContactInfo
         {
@@ -339,22 +329,9 @@ public class ContactServiceTests
         Assert.That(result, Is.Empty);
     }
 
-    private static List<ContactInfo> GetFakeContactsWithFirstNameDifferentFrom(string firstName)
+    private async Task AddContacts(List<ContactInfo> randomContactInfos)
     {
-        List<ContactInfo> randomContacts = [];
-        int i = 0;
-        while (i < 10)
-        {
-            var contactInfo = ContactInfo.FromContact(AutoFaker.Generate<Contact>());
-            if (contactInfo.FirstName == firstName)
-            {
-                continue;
-            }
-
-            randomContacts.Add(contactInfo);
-            i++;
-        }
-
-        return randomContacts;
+        var tasks = randomContactInfos.Select(async c => await contactService.AddContactAsync(c));
+        await Task.WhenAll(tasks);
     }
 }
