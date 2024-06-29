@@ -35,7 +35,7 @@ public partial class App : Application
         logger = InitializeSeriLogger();
         contactService = InitializeContactService(logger);
         dialogService = new DialogService();
-        navigationService = new NavigationService();
+        navigationService = new NavigationService(logger);
         viewModelFactory = new ViewModelFactory(navigationService, contactService, dialogService, logger);
     }
 

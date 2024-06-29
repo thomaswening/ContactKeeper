@@ -58,7 +58,11 @@ internal class ViewModelFactory
         navigationService.RegisterViewModel(contactsOverviewVm);
 
         var mainWindowVm = new MainWindowVm(contactsOverviewVm);
-        navigationService.CurrentViewModelChanged += (s, e) => mainWindowVm.CurrentViewModel = navigationService.CurrentViewModel;
+        navigationService.CurrentViewModelChanged += async (s, e) =>
+        {
+            // Go to contacts overview if the current view model is null
+            mainWindowVm.CurrentViewModel = navigationService.CurrentViewModel ?? await CreateContactsOverviewVmAsync();
+        };
 
         return mainWindowVm;
     }
