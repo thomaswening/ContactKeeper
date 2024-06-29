@@ -9,7 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace ContactKeeper.UI.ViewModels;
 
-public partial class ModalDialogVm : ObservableObject
+internal partial class ModalDialogVm : ObservableObject
 {
     [ObservableProperty]
     private string? title;

@@ -9,7 +9,7 @@ namespace ContactKeeper.UI.ViewModels;
 /// <summary>
 /// Represents the options for a dialog.
 /// </summary>
-public class DialogOptions
+internal class DialogOptions
 {
     /// <summary>
     /// Gets or sets the title of the dialog.

@@ -9,7 +9,7 @@ namespace ContactKeeper.UI.Validation;
 /// <summary>
 /// ViewModel validator for the <see cref="EditContactVm"/> class.
 /// </summary>
-public interface IEditContactVmValidator : IViewModelValidator
+internal interface IEditContactVmValidator : IViewModelValidator
 {
     /// <summary>
     /// Checks if the first name is not empty.
