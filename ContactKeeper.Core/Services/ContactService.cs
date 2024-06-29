@@ -166,7 +166,7 @@ public class ContactService(ILogger logger, IContactRepository repository) : ICo
     }
 
     /// </inheritdoc>
-    public async Task<IEnumerable<Contact>> FindContact(ContactInfo contactInfo)
+    public async Task<IEnumerable<Contact>> FindContactAsync(ContactInfo contactInfo)
     {
         logger.Information("Finding contact.");
 

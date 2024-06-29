@@ -22,8 +22,7 @@ namespace ContactKeeper.UI.ViewModels;
 internal partial class EditContactVm : ValidatedViewModel
 {
     private readonly IEditContactVmValidator validator;
-    private readonly IContactService contactService;
-    private readonly ILogger logger;
+    private readonly IEditContactManager contactManager;
 
     private ContactInfo ContactInfo => new()
     {
@@ -54,26 +53,29 @@ internal partial class EditContactVm : ValidatedViewModel
     private string phone = string.Empty;
 
     [ObservableProperty]
-    private ContactVm? contact;
+    private ContactVm? contactToEdit;
 
     public event EventHandler<AwaitableEventArgs<bool>>? ConfirmContactOverwriteRequested;
     public event EventHandler<AwaitableEventArgs<bool>>? ConfirmCloseWithUnsavedChangesRequested;
+    public event EventHandler<string>? ErrorOccured;
     public event EventHandler? CloseRequested;
 
-    public EditContactVm(IContactService contactService, IEditContactVmValidator validator, ILogger logger, ContactVm? contact = null) : base(validator)
+    public EditContactVm(IEditContactManager contactManager, IEditContactVmValidator validator, ContactVm? contact = null) : base(validator)
     {
-        this.contactService = contactService ?? throw new ArgumentNullException(nameof(contactService));
-        this.validator = validator ?? throw new ArgumentNullException(nameof(validator));
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        ArgumentNullException.ThrowIfNull(contactManager, nameof(contactManager));
+        ArgumentNullException.ThrowIfNull(validator, nameof(validator));
 
-        Contact = contact;
+        this.contactManager = contactManager;
+        this.validator = validator;
 
-        if (Contact is not null)
+        ContactToEdit = contact;
+
+        if (ContactToEdit is not null)
         {
-            FirstName = Contact.FirstName;
-            LastName = Contact.LastName;
-            Email = Contact.Email;
-            Phone = Contact.Phone;
+            FirstName = ContactToEdit.FirstName;
+            LastName = ContactToEdit.LastName;
+            Email = ContactToEdit.Email;
+            Phone = ContactToEdit.Phone;
         }
 
         PropertyChanged += OnPropertyChanged;
@@ -98,70 +100,58 @@ internal partial class EditContactVm : ValidatedViewModel
                 validator.ValidateFirstName(FirstName);
                 validator.ValidatePhone(Phone);
                 break;
+
+            default:
+                break;
         }
     }
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task Save()
     {
-        if (HasUnsavedChanges)
-        {
-            // Is there already a contact with the same name?
-            var duplicateId = await FindDuplicateContact();
+        if (HasErrors) return;
 
-            if (duplicateId is not null && Contact?.Id != duplicateId)
+        if (!HasUnsavedChanges)
+        {
+            CloseRequested?.Invoke(this, EventArgs.Empty);
+            return;
+        }
+
+        try
+        {
+            var duplicateId = await contactManager.FindFullNameDuplicateAsync(FirstName, LastName);
+
+            if (duplicateId is not null && ContactToEdit?.Id != duplicateId)
             {
                 var isOverwrite = await ConfirmOverwriteAsync();
                 if (!isOverwrite)
                     return;
 
-                // Delete the contact being edited and instead update the existing one
-                if (Contact is not null)
-                {
-                    await contactService.DeleteContactAsync(Contact.Id);
-                }
-
-                await contactService.UpdateContactAsync(duplicateId.Value, ContactInfo);
+                await contactManager.HandleDuplicateContact(duplicateId.Value, ContactInfo, ContactToEdit);
             }
-            else if (Contact is not null)
+            else if (ContactToEdit is not null)
             {
-                await contactService.UpdateContactAsync(Contact.Id, ContactInfo);
+                await contactManager.UpdateContactAsync(ContactToEdit.Id, ContactInfo);
             }
             else
             {
-                await contactService.AddContactAsync(ContactInfo);
+                await contactManager.AddContactAsync(ContactInfo);
             }
-        }        
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{ex.Message} Cannot save contact.";
+            ErrorOccured?.Invoke(this, ex.Message);
+        }
 
         CloseRequested?.Invoke(this, EventArgs.Empty);
-    }
-
-    private async Task<Guid?> FindDuplicateContact()
-    {
-        var queryInfo = new ContactInfo()
-        {
-            FirstName = FirstName,
-            LastName = LastName
-        };
-
-        var duplicateContacts = (await contactService.FindContact(queryInfo)).ToList();
-
-        switch (duplicateContacts.Count)
-        {
-            case 1:
-                return duplicateContacts.First().Id;
-            case 0:
-                return null;
-            default:
-                logger.Error($"Found multiple contacts with the same name: {duplicateContacts}.");
-                return null;
-        }
     }
 
     private async Task<bool> ConfirmOverwriteAsync()
     {
         var args = new AwaitableEventArgs<bool>();
         ConfirmContactOverwriteRequested?.Invoke(this, args);
+
         return await args.Task;
     }
 
@@ -174,6 +164,7 @@ internal partial class EditContactVm : ValidatedViewModel
         {
             var args = new AwaitableEventArgs<bool>();
             ConfirmCloseWithUnsavedChangesRequested?.Invoke(this, args);
+
             var isClose = await args.Task;
             if (!isClose) return;
         }
@@ -181,5 +172,5 @@ internal partial class EditContactVm : ValidatedViewModel
         CloseRequested?.Invoke(this, EventArgs.Empty);
     }
 
-    private bool HasUnsavedChanges => Contact is null || !ContactInfo.IsMatch(ContactMapper.Map(Contact));
+    private bool HasUnsavedChanges => contactManager.CheckForUnsavedChanges(ContactInfo, ContactToEdit);
 }

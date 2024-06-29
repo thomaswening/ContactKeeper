@@ -295,7 +295,7 @@ public class ContactServiceTests
         var searchCriteria = randomContactInfos.First();
 
         // Act
-        var result = await contactService.FindContact(searchCriteria);
+        var result = await contactService.FindContactAsync(searchCriteria);
 
         // Assert
         Assert.That(result.Count(), Is.EqualTo(1));
@@ -323,7 +323,7 @@ public class ContactServiceTests
         };
 
         // Act
-        var result = await contactService.FindContact(searchCriteria);
+        var result = await contactService.FindContactAsync(searchCriteria);
 
         // Assert
         Assert.That(result, Is.Empty);

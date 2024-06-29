@@ -94,7 +94,7 @@ public class DummyContactService : IContactService
     }
 
     /// </inheritdoc>
-    public async Task<IEnumerable<Contact>> FindContact(ContactInfo contactInfo)
+    public async Task<IEnumerable<Contact>> FindContactAsync(ContactInfo contactInfo)
     {
         return await Task.Run(() =>
         {

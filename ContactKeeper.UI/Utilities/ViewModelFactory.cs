@@ -58,8 +58,9 @@ internal class ViewModelFactory
 
     public EditContactVm CreateEditContactVm(ContactVm? contact = null)
     {
+        var contactManager = new EditContactManager(contactService, logger);
         var validator = new EditContactVmValidator();
-        var viewModel = new EditContactVm(contactService, validator, logger, contact);
+        var viewModel = new EditContactVm(contactManager, validator, contact);
 
         viewModel.ConfirmContactOverwriteRequested += dialogService.OnConfirmContactOverwrite;
         viewModel.ConfirmCloseWithUnsavedChangesRequested += dialogService.OnConfirmCloseWithUnsavedChanges;
