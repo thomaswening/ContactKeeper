@@ -15,6 +15,8 @@ namespace ContactKeeper.UI.Views;
 /// </summary>
 public partial class MainWindow : Window
 {
+    public string DialogHostIdentifier { get; set; } = "RootDialogHost";
+
     public MainWindow()
     {
         InitializeComponent();

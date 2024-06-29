@@ -9,80 +9,40 @@ using ContactKeeper.UI.Events;
 using ContactKeeper.UI.ViewModels;
 using ContactKeeper.UI.Views;
 
-using MaterialDesignThemes.Wpf;
-
 namespace ContactKeeper.UI.Services;
 
 /// <summary>
-/// Provides services for displaying dialogs in response to various application events.
-/// This service subscribes to specific events and presents modals to the user, allowing for
-/// interaction and confirmation for actions such as overwriting contacts or closing with unsaved changes.
+/// Represents a service for managing dialogs.
 /// </summary>
-internal class DialogService
+internal class DialogService(IDialogHost dialogHost)
 {
-    private const string DialogIdentifier = "RootDialogHost";
-
-    //public void OnErrorOccurred(ErrorOccurredEvent args)
-    //{
-    //    MessageBox.Show(args.Exception.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-    //}
-
     /// <summary>
-    /// Handles the <see cref="ConfirmCloseWithUnsavedChangesRequest"/> event by displaying a confirmation dialog
-    /// to the user regarding unsaved changes.
+    /// Shows a modal dialog asynchronously and returns a value indicating whether the dialog was accepted.
     /// </summary>
-    /// <param name="request">The event data containing details about the request.</param>
-    public async void OnConfirmCloseWithUnsavedChanges(object? sender, AwaitableEventArgs<bool> args)
+    /// <param name="vm">The view model to use for the dialog.</param>
+    /// <param name="args">The event arguments to return the result of the dialog.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public async Task ShowModalDialogWithReturnValueAsync(ModalDialogVm vm, AwaitableEventArgs<bool> args)
     {
-        var options = new DialogOptions()
-        {
-            Title = "Unsaved Changes",
-            OkText = "Yes",
-            CancelText = "No",
-        };
+        ArgumentNullException.ThrowIfNull(args, nameof(args));
 
-        var msg = "You have unsaved changes. Do you want to discard them?";
-        var result = await ShowDialogAsync(msg, options);
-        args.SetResult(result == true);
+        await ShowModalDialogAsync(vm);
+        args.SetResult(vm.DialogResult == true);
     }
 
     /// <summary>
-    /// Handles the <see cref="ConfirmContactOverwriteRequest"/> event by displaying a confirmation dialog
-    /// to the user regarding overwriting contact information.
+    /// Shows a modal dialog asynchronously.
     /// </summary>
-    /// <param name="request">The event data containing details about the request.</param>
-    public async void OnConfirmContactOverwrite(object? sender, AwaitableEventArgs<bool> args)
+    /// <param name="viewModel">The view model to use for the dialog.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="viewModel"/> is <see langword="null"/>.</exception>
+    public async Task ShowModalDialogAsync(ModalDialogVm viewModel)
     {
-        var options = new DialogOptions()
-        {
-            Title = "Confirm Overwrite",
-            OkText = "Yes",
-        };
+        ArgumentNullException.ThrowIfNull(viewModel, nameof(viewModel));
 
-        var msg = "A contact with the same first and last name already exists. Do you want to overwrite it?";
-        var result = await ShowDialogAsync(msg, options);
-        args.SetResult(result == true);
-    }
-
-    /// <summary>
-    /// Displays a dialog asynchronously with the specified message and options.
-    /// </summary>
-    /// <param name="message">The message to be displayed in the dialog.</param>
-    /// <param name="dialogOptions">The options configuring the appearance and behavior of the dialog.</param>
-    /// <returns>A task that represents the asynchronous operation, with a result indicating the user's action.</returns>
-    private static async Task<bool?> ShowDialogAsync(string message, DialogOptions dialogOptions)
-    {
-        var viewModel = new DialogVm(message, dialogOptions);
-        viewModel.CloseRequested += (sender, e) => CloseDialog();
-
+        viewModel.CloseRequested += (s, e) => dialogHost.Close();
         var dialog = new ModalDialogView { DataContext = viewModel };
-        await DialogHost.Show(dialog, DialogIdentifier);
-
-        return viewModel.DialogResult;
+        await dialogHost.ShowAsync(dialog).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Closes the currently displayed dialog.
-    /// </summary>
-    private static void CloseDialog() => DialogHost.Close(DialogIdentifier);
 }

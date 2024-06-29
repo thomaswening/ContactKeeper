@@ -24,6 +24,8 @@ namespace ContactKeeper.UI;
 public partial class App : Application
 {
     private const string ApplicationName = "ContactKeeper";
+    private const string dialogHostIdentifier = "RootDialogHost";
+
     private readonly ILogger logger;
     private readonly IContactService contactService;
     private readonly DialogService dialogService;
@@ -34,9 +36,16 @@ public partial class App : Application
     {
         logger = InitializeSeriLogger();
         contactService = InitializeContactService(logger);
-        dialogService = new DialogService();
+        dialogService = InitializeDialogService();
         navigationService = new NavigationService(logger);
         viewModelFactory = new ViewModelFactory(navigationService, contactService, dialogService, logger);
+    }
+
+    private static DialogService InitializeDialogService()
+    {
+        //var dialogHost = new MaterialDesignDialogHost(dialogHostIdentifier);
+        var dialogHost = new WindowDialogHost();
+        return new DialogService(dialogHost);
     }
 
     private static ContactService InitializeContactService(ILogger logger)

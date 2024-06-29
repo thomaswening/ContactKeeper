@@ -10,7 +10,7 @@
              d:DesignHeight="200"
              d:DesignWidth="400"
              d:Background="White"
-             d:DataContext="{d:DesignInstance viewmodels:DialogVm}"
+             d:DataContext="{d:DesignInstance viewmodels:ModalDialogVm}"
              Height="Auto"
              Width="300">
 

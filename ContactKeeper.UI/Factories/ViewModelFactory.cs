@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using ContactKeeper.Core.Interfaces;
+using ContactKeeper.UI.Events;
 using ContactKeeper.UI.Services;
 using ContactKeeper.UI.Validation;
 using ContactKeeper.UI.ViewModels;
@@ -77,6 +79,7 @@ internal class ViewModelFactory
         var viewModel = new ContactsOverviewVm(contactService);
         viewModel.AddContactRequested += (s, e) => navigationService.RegisterViewModel(CreateEditContactVm());
         viewModel.EditContactRequested += (s, e) => navigationService.RegisterViewModel(CreateEditContactVm(e.Contact));
+        AttachErrorHandler(viewModel);
 
         await viewModel.InitializeContacts();
         return viewModel;
@@ -94,10 +97,34 @@ internal class ViewModelFactory
         var validator = new EditContactVmValidator();
         var viewModel = new EditContactVm(contactManager, validator, contact);
 
-        viewModel.ConfirmContactOverwriteRequested += dialogService.OnConfirmContactOverwrite;
-        viewModel.ConfirmCloseWithUnsavedChangesRequested += dialogService.OnConfirmCloseWithUnsavedChanges;
+        viewModel.ConfirmContactOverwriteRequested += async (s, args) =>
+        {
+            await ShowModalDialogAsync(ModalDialogViewModelFactory.CreateConfirmOverwriteDialogVm, args);
+        };
+
+        viewModel.ConfirmCloseWithUnsavedChangesRequested += async (s, args) =>
+        {
+            await ShowModalDialogAsync(ModalDialogViewModelFactory.CreateConfirmCloseWithUnsavedChangesDialogVm, args).ConfigureAwait(false);
+        };
+
         viewModel.CloseRequested += (s, e) => navigationService.UnregisterViewModel(viewModel);
+        AttachErrorHandler(viewModel);
 
         return viewModel;
+    }
+
+    private async Task ShowModalDialogAsync(Func<ModalDialogVm> creationMethod, AwaitableEventArgs<bool> args)
+    {
+        var vm = creationMethod();
+        await dialogService.ShowModalDialogWithReturnValueAsync(vm, args).ConfigureAwait(false);
+    }
+
+    private void AttachErrorHandler(IErrorPublisher viewModel)
+    {
+        viewModel.ErrorOccured += async (s, e) =>
+        {
+            var vm = ModalDialogViewModelFactory.CreateErrorDialogVm(e);
+            await dialogService.ShowModalDialogAsync(vm).ConfigureAwait(false);
+        };
     }
 }

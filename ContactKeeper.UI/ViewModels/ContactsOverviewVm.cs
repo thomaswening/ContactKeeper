@@ -16,7 +16,7 @@ using Serilog;
 
 namespace ContactKeeper.UI.ViewModels;
 
-internal partial class ContactsOverviewVm : ObservableObject
+internal partial class ContactsOverviewVm : ObservableObject, IErrorPublisher
 {
     private readonly IContactService contactService;
 

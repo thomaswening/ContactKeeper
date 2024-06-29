@@ -19,7 +19,7 @@ using Serilog;
 using Serilog.Core;
 
 namespace ContactKeeper.UI.ViewModels;
-internal partial class EditContactVm : ValidatedViewModel
+internal partial class EditContactVm : ValidatedViewModel, IErrorPublisher
 {
     private readonly IEditContactVmValidator validator;
     private readonly IEditContactManager contactManager;

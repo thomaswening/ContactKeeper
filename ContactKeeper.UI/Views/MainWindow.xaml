@@ -13,7 +13,8 @@
         Width="600"
         MinHeight="500"
         MinWidth="600"
-        Style="{StaticResource MaterialDesignWindow}">
+        Style="{StaticResource MaterialDesignWindow}"
+        x:Name="RootControl">
 
     <Window.Resources>        
 
@@ -32,6 +33,6 @@
         <ContentControl Content="{Binding CurrentViewModel}"
                         Margin="15" />
 
-        <materialDesign:DialogHost Identifier="RootDialogHost" />
+        <materialDesign:DialogHost Identifier="{Binding DialogHostIdentifier, ElementName=RootControl}" />
     </Grid>    
 </Window>

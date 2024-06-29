@@ -19,7 +19,7 @@ internal class DialogVmTests
         // Arrange
         var isCloseRequestedInvoked = false;
         var isCustomActionInvoked = false;
-        var dialogVm = new DialogVm("Test", okAction: () => isCustomActionInvoked = true);
+        var dialogVm = new ModalDialogVm("Test", okAction: () => isCustomActionInvoked = true);
         dialogVm.CloseRequested += (sender, args) => isCloseRequestedInvoked = true;
 
         // Act
@@ -36,7 +36,7 @@ internal class DialogVmTests
     {
         // Arrange
         var isCloseRequestedInvoked = false;
-        var dialogVm = new DialogVm("Test");
+        var dialogVm = new ModalDialogVm("Test");
         dialogVm.CloseRequested += (sender, args) => isCloseRequestedInvoked = true;
 
         // Act
@@ -53,7 +53,7 @@ internal class DialogVmTests
         // Arrange
         var isCustomActionInvoked = false;
         var isCloseRequestedInvoked = false;
-        var dialogVm = new DialogVm("Test", cancelAction: () => isCustomActionInvoked = true);
+        var dialogVm = new ModalDialogVm("Test", cancelAction: () => isCustomActionInvoked = true);
         dialogVm.CloseRequested += (sender, args) => isCloseRequestedInvoked = true;
 
         // Act
@@ -70,7 +70,7 @@ internal class DialogVmTests
     {
         // Arrange
         var isCloseRequestedInvoked = false;
-        var dialogVm = new DialogVm("Test");
+        var dialogVm = new ModalDialogVm("Test");
         dialogVm.CloseRequested += (sender, args) => isCloseRequestedInvoked = true;
 
         // Act

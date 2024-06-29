@@ -9,7 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace ContactKeeper.UI.ViewModels;
 
-public partial class DialogVm : ObservableObject
+public partial class ModalDialogVm : ObservableObject
 {
     [ObservableProperty]
     private string? title;
@@ -25,7 +25,7 @@ public partial class DialogVm : ObservableObject
 
     public event EventHandler? CloseRequested;
 
-    public DialogVm(string message, DialogOptions? dialogOptions = null, Action? okAction = null, Action? cancelAction = null)
+    public ModalDialogVm(string message, DialogOptions? dialogOptions = null, Action? okAction = null, Action? cancelAction = null)
     {
         ArgumentException.ThrowIfNullOrEmpty(message, nameof(message));
         
