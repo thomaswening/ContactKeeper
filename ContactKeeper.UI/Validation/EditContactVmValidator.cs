@@ -17,11 +17,7 @@ internal class EditContactVmValidator : ViewModelValidator, IEditContactVmValida
     private const string Email = nameof(EditContactVm.Email);
     private const string Phone = nameof(EditContactVm.Phone);
 
-    /// <summary>
-    /// Checks if the first name is not empty.
-    /// </summary>
-    /// <param name="firstName">The first name to validate.</param>
-    /// <returns><see langword="true"/> if the first name is valid; otherwise, <see langword="false"/>.</returns>
+    /// <inheritdoc />
     public bool ValidateFirstName(string firstName)
     {
         ClearErrors(FirstName);
@@ -34,11 +30,7 @@ internal class EditContactVmValidator : ViewModelValidator, IEditContactVmValida
         return true;
     }
 
-    /// <summary>
-    /// Checks if the email address has a valid format.
-    /// </summary>
-    /// <param name="email">The email address to validate.</param>
-    /// <returns><see langword="true"/> if the email address is valid; otherwise, <see langword="false"/>.</returns>
+    /// <inheritdoc />
     public bool ValidateEmail(string email)
     {
         ClearErrors(Email);
@@ -57,11 +49,7 @@ internal class EditContactVmValidator : ViewModelValidator, IEditContactVmValida
         }
     }
 
-    /// <summary>
-    /// Checks if the phone number has a valid format.
-    /// </summary>
-    /// <param name="phoneNumber">The phone number to validate.</param>
-    /// <returns><see langword="true"/> if the phone number is valid; otherwise, <see langword="false"/>.</returns>
+    /// <inheritdoc />
     public bool ValidatePhone(string phoneNumber)
     {
         ClearErrors(Phone);
