@@ -15,6 +15,9 @@ using Serilog;
 
 namespace ContactKeeper.UI.Utilities;
 
+/// <summary>
+/// Factory for creating view models.
+/// </summary>
 internal class ViewModelFactory
 {
     private readonly NavigationService navigationService;
@@ -22,6 +25,15 @@ internal class ViewModelFactory
     private readonly DialogService dialogService;
     private readonly ILogger logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ViewModelFactory"/> class.
+    /// </summary>
+    /// <param name="navigationService">The navigation service to use.</param>
+    /// <param name="contactService">The contact service to use.</param>
+    /// <param name="dialogService">The dialog service to use.</param>
+    /// <param name="logger">The logger to use.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="navigationService"/>, <paramref name="contactService"/>, 
+    /// <paramref name="dialogService"/>, or <paramref name="logger"/> is null.</exception>
     public ViewModelFactory(NavigationService navigationService, IContactService contactService, DialogService dialogService, ILogger logger)
     {
         ArgumentNullException.ThrowIfNull(navigationService, nameof(navigationService));
@@ -35,6 +47,11 @@ internal class ViewModelFactory
         this.logger = logger;
     }
 
+    /// <summary>
+    /// Creates a new <see cref="MainWindowVm"/> view model with an initialized <see cref="ContactsOverviewVm"/> as the current view model
+    /// and registers the <see cref="ContactsOverviewVm"/> view model with the <see cref="NavigationService"/>.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the created view model.</returns>
     public async Task<MainWindowVm> CreateMainWindowVmAsync()
     {        
         var contactsOverviewVm = await CreateContactsOverviewVmAsync();
@@ -46,6 +63,11 @@ internal class ViewModelFactory
         return mainWindowVm;
     }
 
+    /// <summary>
+    /// Creates a new <see cref="ContactsOverviewVm"/> view model with the provided <see cref="IContactService"/>, 
+    /// initializes the contacts, and registers the view model with the <see cref="NavigationService"/>.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the created view model.</returns>
     public async Task<ContactsOverviewVm> CreateContactsOverviewVmAsync()
     {
         var viewModel = new ContactsOverviewVm(contactService);
@@ -56,6 +78,12 @@ internal class ViewModelFactory
         return viewModel;
     }
 
+    /// <summary>
+    /// Creates a new <see cref="EditContactVm"/> view model with the provided <see cref="ContactVm"/> 
+    /// and registers the view model with the <see cref="NavigationService"/> and subscribes to the dialog service events.
+    /// </summary>
+    /// <param name="contact">The contact to edit. If null, a new contact will be created.</param>
+    /// <returns>The created view model.</returns>
     public EditContactVm CreateEditContactVm(ContactVm? contact = null)
     {
         var contactManager = new EditContactManager(contactService, logger);
