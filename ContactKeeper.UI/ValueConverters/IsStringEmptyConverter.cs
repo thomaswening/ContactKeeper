@@ -45,6 +45,10 @@ public class IsStringEmptyConverter : IValueConverter
     /// </summary>
     public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
+#if DEBUG        
         throw new NotImplementedException();
+#else
+        return value;
+#endif
     }
 }
