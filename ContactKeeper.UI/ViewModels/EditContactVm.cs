@@ -137,14 +137,14 @@ internal partial class EditContactVm : ValidatedViewModel, IErrorPublisher
             {
                 await contactManager.AddContactAsync(ContactInfo);
             }
+            
+            CloseRequested?.Invoke(this, EventArgs.Empty);
         }
         catch (Exception ex)
         {
             var msg = $"{ex.Message} Cannot save contact.";
             ErrorOccured?.Invoke(this, ex.Message);
-        }
-
-        CloseRequested?.Invoke(this, EventArgs.Empty);
+        }        
     }
 
     private async Task<bool> ConfirmOverwriteAsync()
