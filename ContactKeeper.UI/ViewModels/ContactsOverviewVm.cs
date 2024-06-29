@@ -22,6 +22,7 @@ internal partial class ContactsOverviewVm : ObservableObject
 
     public event EventHandler? AddContactRequested;
     public event EventHandler<EditContactEventArgs>? EditContactRequested;
+    public event EventHandler<string>? ErrorOccured;
 
     [ObservableProperty]
     private List<ContactVm> contacts = [];
@@ -34,7 +35,15 @@ internal partial class ContactsOverviewVm : ObservableObject
 
     public async Task InitializeContacts()
     {
-        Contacts = ContactMapper.Map(await contactService.GetContactsAsync()).ToList();
+        try
+        {
+            Contacts = ContactMapper.Map(await contactService.GetContactsAsync()).ToList();
+        }
+        catch (Exception ex)
+        {
+            ErrorOccured?.Invoke(this, ex.Message);
+            Contacts = [];
+        }        
     }
 
     [RelayCommand]
@@ -46,7 +55,14 @@ internal partial class ContactsOverviewVm : ObservableObject
     [RelayCommand(CanExecute = nameof(IsContactNotNull))]
     private async Task DeleteContactAsync(ContactVm contact)
     {
-        await contactService.DeleteContactAsync(contact.Id);
+        try
+        {
+            await contactService.DeleteContactAsync(contact.Id);
+        }
+        catch (Exception ex)
+        {
+            ErrorOccured?.Invoke(this, ex.Message);
+        }
     }
 
     [RelayCommand(CanExecute = nameof(IsContactNotNull))]
