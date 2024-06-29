@@ -29,7 +29,9 @@ internal partial class ContactsOverviewVm : ObservableObject, IErrorPublisher
 
     public ContactsOverviewVm(IContactService contactService)
     {
-        this.contactService = contactService ?? throw new ArgumentNullException(nameof(contactService));
+        ArgumentNullException.ThrowIfNull(contactService, nameof(contactService));
+
+        this.contactService = contactService;
         contactService.ContactsChanged += OnContactsChanged;
     }
 

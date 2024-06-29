@@ -21,6 +21,7 @@ namespace ContactKeeper.UI.Tests.ViewModels;
 [TestFixture]
 internal class ContactsOverviewVmTests
 {
+    private const int NumberOfFakeContacts = 10;
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private IContactService contactService;
     private ContactsOverviewVm contactsOverviewVm;
@@ -37,8 +38,7 @@ internal class ContactsOverviewVmTests
     public async Task InitializeContacts_WhenCalled_InitializesTheListOfContacts()
     {
         // Arrange
-        var numberOfContacts = 10;
-        var contacts = AutoFaker.Generate<Contact>(numberOfContacts);
+        var contacts = AutoFaker.Generate<Contact>(NumberOfFakeContacts);
         var contactVms = contacts.Select(c => ContactMapper.Map(c)).ToList();
 
         contactService.GetContactsAsync().Returns(contacts);
@@ -47,8 +47,24 @@ internal class ContactsOverviewVmTests
         await contactsOverviewVm.InitializeContacts();
 
         // Assert
-        Assert.That(contactsOverviewVm.Contacts, Has.Count.EqualTo(numberOfContacts));
+        Assert.That(contactsOverviewVm.Contacts, Has.Count.EqualTo(NumberOfFakeContacts));
         Assert.That(contactsOverviewVm.Contacts.Select(c => c.Id), Is.EquivalentTo(contactVms.Select(c => c.Id)));
+    }
+
+    [Test]
+    public async Task InitializeContacts_WhenContactServiceThrowsException_SetsContactsToEmptyListAndInvokesErrorOccured()
+    {
+        // Arrange
+        bool wasInvoked = false;
+        contactsOverviewVm.ErrorOccured += (_, _) => wasInvoked = true;
+        contactService.When(c => c.GetContactsAsync()).Throw<Exception>();
+
+        // Act
+        await contactsOverviewVm.InitializeContacts();
+
+        // Assert
+        Assert.That(contactsOverviewVm.Contacts, Is.Empty);
+        Assert.That(wasInvoked, Is.True);
     }
 
     [Test]
@@ -81,6 +97,23 @@ internal class ContactsOverviewVmTests
     }
 
     [Test]
+    public async Task DeleteContactCommand_WhenContactServiceThrowsException_InvokesErrorOccuredEvent()
+    {
+        // Arrange
+        var contactVm = AutoFaker.Generate<ContactVm>();
+        contactService.When(c => c.DeleteContactAsync(contactVm.Id)).Throw<Exception>();
+
+        var wasInvoked = false;
+        contactsOverviewVm.ErrorOccured += (sender, message) => wasInvoked = true;
+
+        // Act
+        await contactsOverviewVm.DeleteContactCommand.ExecuteAsync(contactVm);
+
+        // Assert
+        Assert.That(wasInvoked, Is.True);
+    }
+
+    [Test]
     public void DeleteContactCommand_WhenContactIsNull_CannotExecute()
     {
         // Act
@@ -96,7 +129,7 @@ internal class ContactsOverviewVmTests
         // Arrange
         var contactVm = AutoFaker.Generate<ContactVm>();
         var wasInvoked = false;
-        contactsOverviewVm.EditContactRequested += (sender, args) => wasInvoked = true;
+        contactsOverviewVm.EditContactRequested += (_, _) => wasInvoked = true;
 
         // Act
         contactsOverviewVm.EditContactCommand.Execute(contactVm);
@@ -119,7 +152,7 @@ internal class ContactsOverviewVmTests
     public async Task ContactsChanged_WhenInvoked_ReInitializesContacts()
     {
         // Arrange
-        var contacts = AutoFaker.Generate<Contact>(10);
+        var contacts = AutoFaker.Generate<Contact>(NumberOfFakeContacts);
         contactService.GetContactsAsync().Returns(contacts);
 
         // Act
@@ -127,6 +160,6 @@ internal class ContactsOverviewVmTests
 
         // Assert
         await contactService.Received(1).GetContactsAsync();
-        Assert.That(contactsOverviewVm.Contacts.Count, Is.EqualTo(contacts.Count));
+        Assert.That(contactsOverviewVm.Contacts.Count, Is.EqualTo(NumberOfFakeContacts));
     }
 }
