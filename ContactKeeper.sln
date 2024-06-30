@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E52DBB87-1184-4D3D-ACFE-D403B9514812}"
 	ProjectSection(SolutionItems) = preProject
 		Readme-Resources\add-contact.png = Readme-Resources\add-contact.png
+		.github\workflows\ci.yml = .github\workflows\ci.yml
 		Readme-Resources\confirm-overwrite.png = Readme-Resources\confirm-overwrite.png
 		Readme-Resources\contacts-overview.png = Readme-Resources\contacts-overview.png
 		Readme-Resources\edit-contact.png = Readme-Resources\edit-contact.png
@@ -24,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContactKeeper.Infrastructur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContactKeeper.Core.Tests", "ContactKeeper.Core.Tests\ContactKeeper.Core.Tests.csproj", "{6EED390B-1A9B-45A5-A961-B6C65F6C2E23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactKeeper.UI.Tests", "ContactKeeper.UI.Tests\ContactKeeper.UI.Tests.csproj", "{917DCEEF-76FB-45E5-A15C-DABE79E7E2A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContactKeeper.UI.Tests", "ContactKeeper.UI.Tests\ContactKeeper.UI.Tests.csproj", "{917DCEEF-76FB-45E5-A15C-DABE79E7E2A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

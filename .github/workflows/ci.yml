@@ -1,0 +1,54 @@
+name: .NET 8 CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        architecture: [win-x64, win-x86, win-arm64]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '8.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build solution
+      run: dotnet build --no-restore
+
+    - name: Run tests for Core
+      run: dotnet test ContactKeeper.Core.Tests/ContactKeeper.Core.Tests.csproj --no-build --verbosity normal
+
+    - name: Run tests for Infrastructure
+      run: dotnet test ContactKeeper.Infrastructure.Tests/ContactKeeper.Infrastructure.Tests.csproj --no-build --verbosity normal
+
+    - name: Run tests for UI
+      run: dotnet test ContactKeeper.UI.Tests/ContactKeeper.UI.Tests.csproj --no-build --verbosity normal
+
+    - name: Publish artifact
+      if: always()
+      run: dotnet publish ContactKeeper.UI/ContactKeeper.UI.csproj -c Release -o ${{github.workspace}}/publish/${{ matrix.architecture }} --self-contained -r ${{ matrix.architecture }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+
+    - name: Upload artifact
+      if: always()
+      uses: actions/upload-artifact@v2
+
+      with:
+        name: ContactKeeper-${{ matrix.architecture }}
+        path: ${{github.workspace}}/publish/${{ matrix.architecture }}
