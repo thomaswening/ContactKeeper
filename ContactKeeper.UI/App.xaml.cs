@@ -32,10 +32,12 @@ public partial class App : Application
     private readonly IDialogService dialogService;
     private readonly INavigationService navigationService;
     private readonly ViewModelFactory viewModelFactory;
+    private readonly FatalErrorHandler fatalErrorHandler;
 
     public App()
     {
         logger = InitializeSeriLogger();
+        fatalErrorHandler = new FatalErrorHandler(logger);
         contactService = InitializeContactService(logger);
         dialogService = InitializeDialogService();
         navigationService = new NavigationService(logger);
@@ -73,7 +75,7 @@ public partial class App : Application
         }
 
         var logger = new LoggerConfiguration()
-            .WriteTo.File(Path.Combine(logPath, "ContactKeeperUI-.log"), rollingInterval: RollingInterval.Day)
+            .WriteTo.File(Path.Combine(logPath, "ContactKeeper-.log"), rollingInterval: RollingInterval.Day, retainedFileCountLimit: 10)
             .WriteTo.Debug()
             .CreateLogger();
 
@@ -82,8 +84,22 @@ public partial class App : Application
 
     private async void Application_Startup(object sender, StartupEventArgs e)
     {
+        AppDomain.CurrentDomain.UnhandledException += OnAppDomainUnhandledException;
+    
         var viewModel = await viewModelFactory.CreateMainWindowVmAsync();
         var mainWindow = new MainWindow() { DataContext = viewModel };
         mainWindow.Show();
+    }
+
+    // TO DO: Encapsulate fatal exception handling in a separate class
+
+    private void OnAppDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        fatalErrorHandler.OnAppDomainUnhandledException(sender, e);
+    }
+
+    private void Application_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+    {
+        fatalErrorHandler.OnDispatcherUnhandledException(sender, e);
     }
 }

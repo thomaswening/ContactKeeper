@@ -52,11 +52,11 @@ public class JsonContactRepository : IContactRepository
     /// <exception cref="Exception">Thrown when an error occurs while retrieving contacts.</exception>
     public async Task<IEnumerable<Contact>> GetContactsAsync()
     {
-        logger.Information($"Attempting to retrieve contacts from {filePath}");
+        logger.Information($"Attempting to retrieve contacts from JSON repository.");
 
         if (!fileSystem.File.Exists(filePath))
         {
-            logger.Warning($"File {filePath} not found. Creating a new file.");
+            logger.Warning($"JSON repository not found. Creating a new one.");
             await SaveContactsAsync([]);
         }
 
@@ -88,12 +88,12 @@ public class JsonContactRepository : IContactRepository
         }
         catch (UnauthorizedAccessException ex)
         {
-            logger.Error(ex, $"Read access to the contact data file '{filePath}' is denied.");
+            logger.Error(ex, $"Read access to the contact data file JSON repository is denied.");
             throw;
         }
         catch (Exception ex)
         {
-            logger.Error(ex, $"An error occurred while retrieving contacts from '{filePath}'.");
+            logger.Error(ex, $"An error occurred while retrieving contacts from JSON repository.");
             throw;
         }
         finally
@@ -114,7 +114,7 @@ public class JsonContactRepository : IContactRepository
     {
         try
         {
-            logger.Information("Attempting to save contacts to {FilePath}", filePath);
+            logger.Information("Attempting to save contacts to JSON repository.");
 
             await semaphoreSlim.WaitAsync();
             using var outputStream = fileSystem.File.Open(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
@@ -124,19 +124,19 @@ public class JsonContactRepository : IContactRepository
         }
         catch (JsonException ex)
         {
-            var msg = $"Contact data file '{filePath}' is invalid.";
+            var msg = $"JSON repository is corrupted.";
             logger.Error(ex, msg);
 
             throw new RepositoryCorruptedException(msg, ex);
         }
         catch (UnauthorizedAccessException ex)
         {
-            logger.Error(ex, $"Write access to the contact data file '{filePath}' is denied.");
+            logger.Error(ex, $"Write access to the JSON repository is denied.");
             throw;
         }
         catch (Exception ex)
         {
-            logger.Error(ex, $"An error occurred while saving contacts to '{filePath}'.");
+            logger.Error(ex, $"An error occurred while saving contacts to JSON repository.");
             throw;
         }
         finally

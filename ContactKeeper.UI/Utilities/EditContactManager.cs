@@ -44,7 +44,7 @@ internal class EditContactManager(IContactService contactService, ILogger logger
     {
         ArgumentNullException.ThrowIfNull(firstName, nameof(firstName));
         ArgumentNullException.ThrowIfNull(lastName, nameof(lastName));
-        logger.Information($"Searching for duplicate contact with first name: {firstName} and last name: {lastName}.");
+        logger.Information($"Searching for duplicate contact.");
 
         if (string.IsNullOrWhiteSpace(firstName))
         {
