@@ -46,9 +46,9 @@ internal class EditContactManager(IContactService contactService, ILogger logger
         ArgumentNullException.ThrowIfNull(lastName, nameof(lastName));
         logger.Information($"Searching for duplicate contact with first name: {firstName} and last name: {lastName}.");
 
-        if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+        if (string.IsNullOrWhiteSpace(firstName))
         {
-            logger.Error($"Empty first or last name provided to {nameof(FindFullNameDuplicateAsync)}.");
+            logger.Error($"Empty first name provided to {nameof(FindFullNameDuplicateAsync)}.");
             return null;
         }
 
@@ -87,6 +87,7 @@ internal class EditContactManager(IContactService contactService, ILogger logger
     /// <inheritdoc />
     public bool CheckForUnsavedChanges(ContactInfo contactInfoToCheck, ContactVm? contactToCompare)
     {
+        ArgumentNullException.ThrowIfNull(contactInfoToCheck, nameof(contactInfoToCheck));
         return contactToCompare is null || !contactInfoToCheck.IsMatch(ContactMapper.Map(contactToCompare));
     }
 }
