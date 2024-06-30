@@ -10,6 +10,7 @@
         d:Height="100"
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterScreen"
         Topmost="True">
     
     <Grid>

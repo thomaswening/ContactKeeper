@@ -12,7 +12,8 @@
              mc:Ignorable="d"
              d:DesignHeight="400"
              d:DesignWidth="300"
-             d:Background="White">
+             d:Background="White"
+             d:DataContext="{d:DesignInstance Type=viewmodels:EditContactVm}">
 
     <UserControl.Resources>
         <converters:TrimStringConverter x:Key="TrimString" />
@@ -46,7 +47,7 @@
                     Value="Edit Contact" />
 
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Contact}"
+                <DataTrigger Binding="{Binding ContactToEdit}"
                              Value="{x:Null}">
 
                     <Setter Property="Text"
