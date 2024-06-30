@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,25 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using ContactKeeper.UI.Utilities;
 
 namespace ContactKeeper.UI.ViewModels;
-internal partial class MainWindowVm(ObservableObject initialViewModel) : ObservableObject
+internal partial class MainWindowVm : ObservableObject
 {
+    public event EventHandler? DefaultViewModelRequested;
+
     [ObservableProperty]
-    private ObservableObject currentViewModel = initialViewModel ?? throw new ArgumentNullException(nameof(initialViewModel));
+    private ObservableObject? currentViewModel;
+
+    public MainWindowVm(ObservableObject initialViewModel)
+    {
+        PropertyChanged += OnPropertyChanged;
+        CurrentViewModel = initialViewModel ?? throw new ArgumentNullException(nameof(initialViewModel));
+    }
+
+    private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        // If the current view model is set to null, request the default view model
+        if (e.PropertyName == nameof(CurrentViewModel) && CurrentViewModel is null)
+        {
+            DefaultViewModelRequested?.Invoke(this, EventArgs.Empty);
+        }
+    }
 }

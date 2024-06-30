@@ -22,9 +22,9 @@ namespace ContactKeeper.UI.Utilities;
 /// </summary>
 internal class ViewModelFactory
 {
-    private readonly NavigationService navigationService;
+    private readonly INavigationService navigationService;
     private readonly IContactService contactService;
-    private readonly DialogService dialogService;
+    private readonly IDialogService dialogService;
     private readonly ILogger logger;
 
     /// <summary>
@@ -36,7 +36,7 @@ internal class ViewModelFactory
     /// <param name="logger">The logger to use.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="navigationService"/>, <paramref name="contactService"/>, 
     /// <paramref name="dialogService"/>, or <paramref name="logger"/> is null.</exception>
-    public ViewModelFactory(NavigationService navigationService, IContactService contactService, DialogService dialogService, ILogger logger)
+    public ViewModelFactory(INavigationService navigationService, IContactService contactService, IDialogService dialogService, ILogger logger)
     {
         ArgumentNullException.ThrowIfNull(navigationService, nameof(navigationService));
         ArgumentNullException.ThrowIfNull(contactService, nameof(contactService));
@@ -60,11 +60,8 @@ internal class ViewModelFactory
         navigationService.RegisterViewModel(contactsOverviewVm);
 
         var mainWindowVm = new MainWindowVm(contactsOverviewVm);
-        navigationService.CurrentViewModelChanged += async (s, e) =>
-        {
-            // Go to contacts overview if the current view model is null
-            mainWindowVm.CurrentViewModel = navigationService.CurrentViewModel ?? await CreateContactsOverviewVmAsync();
-        };
+        mainWindowVm.DefaultViewModelRequested += async (s, e) => mainWindowVm.CurrentViewModel = await CreateContactsOverviewVmAsync();
+        navigationService.CurrentViewModelChanged += (s, e) => mainWindowVm.CurrentViewModel = navigationService.CurrentViewModel;
 
         return mainWindowVm;
     }

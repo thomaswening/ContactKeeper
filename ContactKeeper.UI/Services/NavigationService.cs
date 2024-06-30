@@ -13,7 +13,7 @@ namespace ContactKeeper.UI.Services;
 /// <summary>
 /// Service for managing navigation between view models.
 /// </summary>
-internal class NavigationService(ILogger logger)
+internal class NavigationService(ILogger logger) : INavigationService
 {
     private readonly List<ObservableObject> viewModels = [];
 
@@ -56,7 +56,7 @@ internal class NavigationService(ILogger logger)
     /// <param name="viewModel">The view model to unregister.</param>
     public void UnregisterViewModel(ObservableObject viewModel)
     {
-        if (viewModel is null) 
+        if (viewModel is null)
         {
             logger.Warning($"Attempted to unregister a null view model. Ignoring request.");
             return;

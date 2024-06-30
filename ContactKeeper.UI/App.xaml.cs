@@ -29,8 +29,8 @@ public partial class App : Application
 
     private readonly ILogger logger;
     private readonly IContactService contactService;
-    private readonly DialogService dialogService;
-    private readonly NavigationService navigationService;
+    private readonly IDialogService dialogService;
+    private readonly INavigationService navigationService;
     private readonly ViewModelFactory viewModelFactory;
 
     public App()
