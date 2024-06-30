@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 using ContactKeeper.UI.Events;
+using ContactKeeper.UI.Factories;
 using ContactKeeper.UI.ViewModels;
 using ContactKeeper.UI.Views;
 
@@ -14,7 +15,7 @@ namespace ContactKeeper.UI.Services;
 /// <summary>
 /// Represents a service for managing dialogs.
 /// </summary>
-internal class DialogService(IDialogHost dialogHost)
+internal class DialogService(IDialogHost dialogHost, IModalDialogViewFactory viewFactory)
 {
     /// <summary>
     /// Shows a modal dialog asynchronously and returns a value indicating whether the dialog was accepted.
@@ -41,7 +42,9 @@ internal class DialogService(IDialogHost dialogHost)
         ArgumentNullException.ThrowIfNull(viewModel, nameof(viewModel));
 
         viewModel.CloseRequested += (s, e) => dialogHost.Close();
-        var dialog = new ModalDialogView { DataContext = viewModel };
+        var dialog = viewFactory.CreateModalDialogView();
+        dialog.DataContext = viewModel;
+
         await dialogHost.ShowAsync(dialog).ConfigureAwait(false);
     }
 

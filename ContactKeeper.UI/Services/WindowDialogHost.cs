@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
+using ContactKeeper.UI.Factories;
 using ContactKeeper.UI.Views;
 
 namespace ContactKeeper.UI.Services;
@@ -25,7 +26,7 @@ internal class WindowDialogHost : IDialogHost
     /// <param name="dialog">The dialog to show.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="dialog"/> is <see langword="null"/>.</exception>
-    public async Task ShowAsync(ModalDialogView dialog)
+    public async Task ShowAsync(IModalDialogView dialog)
     {
         ArgumentNullException.ThrowIfNull(dialog, nameof(dialog));        
 

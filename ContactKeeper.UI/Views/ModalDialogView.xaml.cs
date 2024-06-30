@@ -13,11 +13,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using ContactKeeper.UI.Factories;
+
 namespace ContactKeeper.UI.Views;
 /// <summary>
 /// Interaction logic for ModalDialogView.xaml
 /// </summary>
-public partial class ModalDialogView : UserControl
+public partial class ModalDialogView : UserControl, IModalDialogView
 {
     public ModalDialogView()
     {

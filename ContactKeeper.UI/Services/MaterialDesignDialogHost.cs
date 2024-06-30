@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
+using ContactKeeper.UI.Factories;
 using ContactKeeper.UI.Views;
 
 using MaterialDesignThemes.Wpf;
@@ -30,7 +31,7 @@ class MaterialDesignDialogHost(string dialogHostIdentifier) : IDialogHost
     /// </summary>
     /// <param name="dialog">The dialog to show.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public async Task ShowAsync(ModalDialogView dialog)
+    public async Task ShowAsync(IModalDialogView dialog)
     {
         await Application.Current.Dispatcher.Invoke(async () =>
         {

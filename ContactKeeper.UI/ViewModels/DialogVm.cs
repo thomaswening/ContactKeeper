@@ -57,11 +57,13 @@ internal partial class ModalDialogVm : ObservableObject
     public RelayCommand OkCommand { get; }
     public RelayCommand CancelCommand { get; }
 
-    public bool? DialogResult { get; private set; }
+    public bool? DialogResult { get; protected set; }
+
+    protected void InvokeCloseRequested() => CloseRequested?.Invoke(this, EventArgs.Empty);
 
     private void SetDialogResult(bool result)
     {
         DialogResult = result;
-        CloseRequested?.Invoke(this, EventArgs.Empty);
+        InvokeCloseRequested();
     }
 }

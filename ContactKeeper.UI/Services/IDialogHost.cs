@@ -1,4 +1,5 @@
-﻿using ContactKeeper.UI.Views;
+﻿using ContactKeeper.UI.Factories;
+using ContactKeeper.UI.Views;
 
 namespace ContactKeeper.UI.Services;
 
@@ -17,5 +18,5 @@ internal interface IDialogHost
     /// </summary>
     /// <param name="dialog">The dialog to show.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    Task ShowAsync(ModalDialogView dialog);
+    Task ShowAsync(IModalDialogView dialog);
 }

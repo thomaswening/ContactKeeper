@@ -8,6 +8,7 @@ using ContactKeeper.Core.Interfaces;
 using ContactKeeper.Core.Services;
 using ContactKeeper.Infrastructure.Repositories;
 using ContactKeeper.Infrastructure.Utilities;
+using ContactKeeper.UI.Factories;
 using ContactKeeper.UI.Services;
 using ContactKeeper.UI.Utilities;
 using ContactKeeper.UI.ViewModels;
@@ -45,7 +46,8 @@ public partial class App : Application
     {
         //var dialogHost = new MaterialDesignDialogHost(dialogHostIdentifier);
         var dialogHost = new WindowDialogHost();
-        return new DialogService(dialogHost);
+        var viewFactory = new ModalDialogViewFactory();
+        return new DialogService(dialogHost, viewFactory);
     }
 
     private static ContactService InitializeContactService(ILogger logger)
