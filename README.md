@@ -12,11 +12,14 @@ ContactKeeper is a contact management application for Windows Desktop that allow
 
 ## Planned Features
 
+- Installer
 - Search contacts by name or other attributes
 - Multiple email addresses and phone numbers per contact
 - Import and export contacts from/to other formats
 - Integration with Google Contacts
 - Themes and customization options
+- Support for more languages
+- Backup and restore functionality
 
 ## Screenshots
 
@@ -46,11 +49,20 @@ ContactKeeper is a contact management application for Windows Desktop that allow
 ## Dependencies
 
 - .NET Framework 8.0 or higher
-- Newtonsoft.Json (JSON.NET) library
-- CommunityToolkit.Mvvm package
-- MaterialDesignThemes package
-- Serilog package
-- Microsoft.Xaml.Behaviors.Wpf package
+- CommunityToolkit.Mvvm v.8.2.2
+- MaterialDesignThemes v.5.0.1-ci662
+- Microsoft.Xaml.Behaviors.Wpf v.1.1.122
+- Serilog v.4.0.0
+- Serilog.Extensions.Logging v.8.0.1-dev-10391
+- Serilog.Sinks.Debug v.3.0.0
+- Serilog.Sinks.File v.5.0.1-dev-00972
+
+And for testing:
+- AutoBogus v.2.13.1
+- Microsoft.NET.Test.Sdk v.17.10.0
+- NSubstitute v.5.1.0
+- NUnit v.4.1.0
+- NUnit3TestAdapter v.4.5.0
 
 ## Building the Project
 
