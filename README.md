@@ -95,6 +95,26 @@ The Core layer contains the models and services that represent the contact entit
 
 The Infrastructure layer provides the implementation of the repositories and other utilities. The JSONContactRepository class is responsible for reading and writing the contact data to the JSON file.
 
+## Continuous Integration Workflow
+
+The ContactKeeper project uses GitHub Actions for Continuous Integration (CI), ensuring that every push and pull request to the `main` branch triggers a series of automated steps to build, test, and prepare the application for release. The CI workflow is defined in the `.github/workflows/ci.yml` file and consists of the following steps:
+
+1. **Checkout Code**: The workflow checks out the latest code from the `main` branch to run the subsequent steps.
+
+2. **Setup .NET SDK**: Sets up the .NET 8 SDK, allowing the use of .NET CLI tools in the workflow.
+
+3. **Restore Dependencies**: Executes `dotnet restore` to restore all the necessary .NET dependencies specified in the project files.
+
+4. **Build Solution**: Compiles the entire solution using `dotnet build --no-restore` to ensure that the code builds correctly without restoring dependencies again.
+
+5. **Run Tests**: Runs unit tests for the Core, Infrastructure, and UI projects separately using `dotnet test`, ensuring that all tests pass. This step is crucial for maintaining code quality and functionality.
+
+6. **Publish Artifact**: If all tests pass, the workflow publishes the UI project as a self-contained application for different architectures (win-x64, win-x86, win-arm64). This step prepares the application for distribution by packaging it into a single file.
+
+7. **Upload Artifact**: Finally, the published artifacts are uploaded to GitHub, making them available for download. This step ensures that the built application can be easily accessed and deployed.
+
+The CI workflow is triggered automatically on every push and pull request to the `main` branch, ensuring that the codebase remains stable and deployable at all times.
+
 ## License
 
 The ContactKeeper project is licensed under the GNU General Public License (GPL) version 3. You can find the full text of the license in the [LICENSE.txt](LICENSE.txt) file.
