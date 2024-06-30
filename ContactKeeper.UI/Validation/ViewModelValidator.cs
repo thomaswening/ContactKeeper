@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,7 +33,8 @@ public class ViewModelValidator : ObservableObject, IViewModelValidator
     /// <returns><see langword="true"/> if the property has validation errors; otherwise, <see langword="false"/>.</returns>
     public bool IsValid(string? propertyName)
     {
-        return !errorsToProperty.ContainsKey(propertyName ?? string.Empty);
+        return string.IsNullOrWhiteSpace(propertyName)
+            || !errorsToProperty.TryGetValue(propertyName, out var _);
     }
 
     /// <inheritdoc/>
@@ -62,10 +63,7 @@ public class ViewModelValidator : ObservableObject, IViewModelValidator
     /// <exception cref="ArgumentException">Thrown when <paramref name="propertyName"/> is <see langword="null"/> or empty.</exception>
     protected void AddError(string propertyName, string error)
     {
-        if (string.IsNullOrWhiteSpace(propertyName))
-        {
-            throw new ArgumentException("The property name cannot be null or empty.", nameof(propertyName));
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(propertyName, nameof(propertyName));
 
         if (!errorsToProperty.TryGetValue(propertyName, out List<string>? value))
         {
@@ -80,8 +78,10 @@ public class ViewModelValidator : ObservableObject, IViewModelValidator
     /// <summary>
     /// Clears all validation errors for the specified property.
     /// </summary>
-    protected void ClearErrors(string propertyName)
+    protected void ClearErrors(string? propertyName)
     {
+        if (propertyName is null) return;
+
         if (errorsToProperty.Remove(propertyName))
         {
             OnErrorsChanged(propertyName);

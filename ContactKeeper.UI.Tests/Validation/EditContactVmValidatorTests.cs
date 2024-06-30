@@ -64,6 +64,7 @@ internal class EditContactVmValidatorTests
         var result = validator.ValidateEmail(value);
 
         Assert.That(result, Is.False);
+        Assert.That(validator.HasErrors, Is.True);
     }
 
     [Test]
@@ -98,6 +99,7 @@ internal class EditContactVmValidatorTests
         var result = validator.ValidatePhone(value);
 
         Assert.That(result, Is.False);
+        Assert.That(validator.HasErrors, Is.True);
     }
 
     [Test]
