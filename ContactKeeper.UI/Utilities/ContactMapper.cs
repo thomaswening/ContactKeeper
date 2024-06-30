@@ -22,6 +22,7 @@ internal static class ContactMapper
     /// <returns>A new <see cref="ContactVm"/> object populated with the contact's data.</returns>
     public static ContactVm Map(Contact contact)
     {
+        ArgumentNullException.ThrowIfNull(contact, nameof(contact));
         return new ContactVm(contact.Id, contact.FirstName, contact.LastName, contact.Phone, contact.Email);
     }
 
@@ -32,6 +33,7 @@ internal static class ContactMapper
     /// <returns>A new <see cref="Contact"/> object populated with the contact view model's data.</returns>
     public static Contact Map(ContactVm contactVm)
     {
+        ArgumentNullException.ThrowIfNull(contactVm, nameof(contactVm));
         return new Contact(contactVm.Id, contactVm.FirstName, contactVm.LastName, contactVm.Phone, contactVm.Email);
     }
 
@@ -42,6 +44,7 @@ internal static class ContactMapper
     /// <returns>A new collection of <see cref="ContactVm"/> objects populated with the contacts' data.</returns>
     public static IEnumerable<ContactVm> Map(IEnumerable<Contact> contacts)
     {
+        ArgumentNullException.ThrowIfNull(contacts, nameof(contacts));
         return contacts.Select(contact => Map(contact));
     }
 
@@ -52,6 +55,7 @@ internal static class ContactMapper
     /// <returns>A new collection of <see cref="Contact"/> objects populated with the contact view models' data.</returns>
     public static IEnumerable<Contact> Map(IEnumerable<ContactVm> contactVms)
     {
+        ArgumentNullException.ThrowIfNull(contactVms, nameof(contactVms));
         return contactVms.Select(contactVm => Map(contactVm));
     }
 }
