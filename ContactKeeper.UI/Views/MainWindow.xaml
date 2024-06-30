@@ -7,13 +7,15 @@
         xmlns:local="clr-namespace:ContactKeeper.UI.Views"
         xmlns:viewmodels="clr-namespace:ContactKeeper.UI.ViewModels"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowVm, IsDesignTimeCreatable=True}"
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowVm}"
         Title="ContactKeeper" 
         Height="500" 
         Width="600"
         MinHeight="500"
         MinWidth="600"
+        Icon="../Resources/app-icon.ico"
         Style="{StaticResource MaterialDesignWindow}"
+        WindowStartupLocation="CenterScreen"
         x:Name="RootControl">
 
     <Window.Resources>        

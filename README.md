@@ -1,8 +1,10 @@
 # ContactKeeper
 
-![Contacts Overview](Readme-Resources/contacts-overview.png)
+![App Logo](Readme-Resources/app-logo-800px.png)
 
 ContactKeeper is a contact management application for Windows Desktop that allows users to store and manage their contacts. It is built using a layered architecture and follows the MVVM (Model-View-ViewModel) design pattern. The application uses JSON as the data storage format and implements a repository pattern for data access.
+
+![Contacts Overview](Readme-Resources/contacts-overview.png)
 
 ## Features
 
@@ -118,3 +120,4 @@ The CI workflow is triggered automatically on every push and pull request to the
 ## License
 
 The ContactKeeper project is licensed under the GNU General Public License (GPL) version 3. You can find the full text of the license in the [LICENSE.txt](LICENSE.txt) file.
+
