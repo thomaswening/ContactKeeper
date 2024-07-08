@@ -124,4 +124,3 @@ The CI workflow is triggered automatically on every push and pull request to the
 ## License
 
 The ContactKeeper project is licensed under the GNU General Public License (GPL) version 3. You can find the full text of the license in the [LICENSE.txt](LICENSE.txt) file.
-
