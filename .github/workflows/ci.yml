@@ -30,7 +30,7 @@ jobs:
       run: dotnet restore
 
     - name: Build solution
-      run: dotnet build --no-restore
+      run: dotnet build --no-restore -p:DebugType=none
 
     - name: Run tests for Core
       run: dotnet test ContactKeeper.Core.Tests/ContactKeeper.Core.Tests.csproj --no-build --verbosity normal
@@ -43,7 +43,7 @@ jobs:
 
     - name: Publish artifact
       if: always()
-      run: dotnet publish ContactKeeper.UI/ContactKeeper.UI.csproj -c Release -o ${{github.workspace}}/publish/${{ matrix.architecture }} --self-contained -r ${{ matrix.architecture }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+      run: dotnet publish ContactKeeper.UI/ContactKeeper.UI.csproj -c Release -o ${{github.workspace}}/publish/${{ matrix.architecture }} --self-contained -r ${{ matrix.architecture }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none
 
     - name: Upload artifact
       if: always()
