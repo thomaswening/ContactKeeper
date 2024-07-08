@@ -50,7 +50,6 @@ jobs:
     - name: Upload artifact
       if: always()
       uses: actions/upload-artifact@v4
-
       with:
         name: ContactKeeper-${{ matrix.architecture }}
         path: ${{github.workspace}}/publish/${{ matrix.architecture }}
@@ -70,6 +69,7 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
+        body_path: ./release-notes.md
         draft: false
         prerelease: false
 
@@ -77,6 +77,6 @@ jobs:
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ${{ github.workspace }}/publish/${{ matrix.architecture }}
-        asset_name: ContactKeeper-${{ matrix.architecture }}.zip
+        asset_path: ${{ github.workspace }}/publish/ContactKeeper-${{ matrix.architecture }}-${{ github.ref }}.zip
+        asset_name: ContactKeeper-${{ matrix.architecture }}-${{ github.ref }}.zip
         asset_content_type: application/zip
