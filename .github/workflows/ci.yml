@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*.*.*'
 
   pull_request:
     branches:
@@ -52,3 +54,29 @@ jobs:
       with:
         name: ContactKeeper-${{ matrix.architecture }}
         path: ${{github.workspace}}/publish/${{ matrix.architecture }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Create GitHub Release
+      id: create_release
+      uses: ncipollo/release-action@v1.14.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Assets
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ${{ github.workspace }}/publish/${{ matrix.architecture }}
+        asset_name: ContactKeeper-${{ matrix.architecture }}.zip
+        asset_content_type: application/zip

@@ -113,7 +113,11 @@ The ContactKeeper project uses GitHub Actions for Continuous Integration (CI), e
 
 6. **Publish Artifact**: If all tests pass, the workflow publishes the UI project as a self-contained application for different architectures (win-x64, win-x86, win-arm64). This step prepares the application for distribution by packaging it into a single file.
 
-7. **Upload Artifact**: Finally, the published artifacts are uploaded to GitHub, making them available for download. This step ensures that the built application can be easily accessed and deployed.
+7. **Upload Artifact**: The published artifacts are uploaded to GitHub, making them available for download. This step ensures that the built application can be easily accessed and deployed.
+
+8. **Create GitHub Release**: After the build and test steps are successfully completed, the workflow creates a GitHub Release. This step is performed by the `release` job, which runs on an Ubuntu-latest runner. It uses the `ncipollo/release-action` action to create a new release on GitHub, tagging the current commit with the version number and adding a release name. This makes the release officially available to users and marks a stable version of the application.
+
+9. **Upload Release Assets**: Finally, the workflow uploads the previously built artifacts as assets to the GitHub Release. This ensures that the application's executable files are attached to the release, making it easy for users to download the latest version of the application directly from the GitHub Releases page.
 
 The CI workflow is triggered automatically on every push and pull request to the `main` branch, ensuring that the codebase remains stable and deployable at all times.
 
