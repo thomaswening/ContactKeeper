@@ -8,17 +8,13 @@ using ContactKeeper.UI.Views;
 
 namespace ContactKeeper.UI.Factories;
 
-/// <summary>
-/// Represents a factory for creating modal dialog views, actual implementation.
-/// </summary>
+/// <inheritdoc cref="IModalDialogViewFactory"/>
 internal class ModalDialogViewFactory : IModalDialogViewFactory
 {
-    /// <summary>
-    /// Creates a new instance of a modal dialog view.
-    /// </summary>
-    /// <returns>A new instance of a modal dialog view.</returns>
-    public IModalDialogView CreateModalDialogView()
-    {
-        return new ModalDialogView();
-    }
+    /// <inheritdoc/>
+    public IModalDialogView CreateModalDialogView() => new ModalDialogView();
+
+    /// <inheritdoc/>
+
+    public IModalDialogView CreateAboutSectionView() => new AboutSectionView();
 }

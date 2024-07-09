@@ -9,6 +9,13 @@ namespace ContactKeeper.UI.Services;
 internal interface IDialogService
 {
     /// <summary>
+    /// Shows the about section.
+    /// </summary>
+    /// <param name="viewModel">The view model to use for the about section.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    Task ShowAboutSectionAsync(AboutSectionVm viewModel);
+
+    /// <summary>
     /// Shows a modal dialog asynchronously.
     /// </summary>
     /// <param name="viewModel">The view model to use for the dialog.</param>

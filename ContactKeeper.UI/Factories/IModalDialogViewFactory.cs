@@ -6,6 +6,11 @@
 internal interface IModalDialogViewFactory
 {
     /// <summary>
+    /// Creates a new instance of an about section view.
+    /// </summary>s
+    IModalDialogView CreateAboutSectionView();
+
+    /// <summary>
     /// Creates a new instance of a modal dialog view.
     /// </summary>
     IModalDialogView CreateModalDialogView();
