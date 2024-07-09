@@ -11,8 +11,8 @@
              xmlns:behaviors="clr-namespace:ContactKeeper.UI.Behaviors"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewmodels:AboutSectionVm, IsDesignTimeCreatable=True}"
-             d:DesignHeight="450"
-             d:DesignWidth="400"
+             d:DesignHeight="600"
+             d:DesignWidth="450"
              d:Background="White"
              Width="450">
 
@@ -58,7 +58,7 @@
 
             <Image Source="{StaticResource AppIcon}"
                    VerticalAlignment="Center"
-                   Margin="0 0 20 0"
+                   Margin="0 0 10 0"
                    Width="50" />
 
             <TextBlock Text="About ContactKeeper"
@@ -67,23 +67,26 @@
                        Style="{StaticResource MaterialDesignHeadline5TextBlock}" />
         </StackPanel>
 
-        <!-- Main Area -->
         <StackPanel Grid.Row="1">
 
+            <!--Description-->
             <TextBlock Text="{Binding ApplicationDescription}"
                        TextAlignment="Center"
                        Margin="0 0 0 20" />
 
+            <!--Version-->
             <TextBlock Margin="0 0 0 10">
                 <Run FontWeight="Bold">Version: </Run>
                 <Run Text="{Binding Version, Mode=OneWay}" />
             </TextBlock>
 
+            <!--Developer-->
             <TextBlock Margin="0 0 0 10">
                 <Run FontWeight="Bold">Developer: </Run>
                 <Run Text="{Binding Developer, Mode=OneWay}" />
             </TextBlock>
 
+            <!--Contact Info-->
             <TextBlock Margin="0 0 0 10">
                 <Run FontWeight="Bold">Contact: </Run>
                 <Hyperlink NavigateUri="{Binding Contact, Converter={StaticResource MailToHyperLink}}">
@@ -95,6 +98,7 @@
                 </Hyperlink>
             </TextBlock>
 
+            <!--GitHub Link-->
             <TextBlock Margin="0 0 0 10">
                 For more information and to see current and planned features, please check the 
                 <Hyperlink NavigateUri="{Binding GithubLink}">
@@ -106,10 +110,20 @@
                 </Hyperlink>.
             </TextBlock>
 
-            <TextBlock Margin="0 0 0 10">
+            <!--License-->
+            <TextBlock Margin="0 0 0 20">
                 <Run FontWeight="Bold">License: </Run>
                 <Run Text="{Binding License, Mode=OneWay}" />
             </TextBlock>
+
+            <!-- Acknowledgments Section -->
+            <TextBlock FontWeight="Bold">Acknowledgments:</TextBlock>
+            <TextBlock Margin="0 0 0 10">
+                This project uses the following open-source projects.
+            </TextBlock>
+
+            <TextBlock Text="{Binding AcknowledgedDependencies}"
+                       FontSize="14"/>
         </StackPanel>
     </Grid>
 </UserControl>
