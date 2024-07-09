@@ -12,7 +12,6 @@ ContactKeeper is a contact management application for Windows Desktop that allow
 
 ## Planned Features
 
-- Installer
 - Search contacts by name or other attributes
 - Multiple email addresses and phone numbers per contact
 - Import and export contacts from/to other formats
