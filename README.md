@@ -1,6 +1,4 @@
-# ContactKeeper
-
-![App Logo](Readme-Resources/app-logo-800px.png)
+![ContactKeeper](Readme-Resources/app-logo-800px.png)
 
 ContactKeeper is a contact management application for Windows Desktop that allows users to store and manage their contacts. It is built using a layered architecture and follows the MVVM (Model-View-ViewModel) design pattern. The application uses JSON as the data storage format and implements a repository pattern for data access.
 

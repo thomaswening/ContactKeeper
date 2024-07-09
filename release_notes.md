@@ -16,14 +16,11 @@ For an up-to-date list of planned features, please refer to the [README.md](READ
 
 ### Screenshots
 
-- **Add Contact**
-  ![Add Contact](Readme-Resources/add-contact.png)
-- **Edit Contact**
-  ![Edit Contact](Readme-Resources/edit-contact.png)
-- **Unsaved Changes**
-  ![Unsaved Changes](Readme-Resources/unsaved-changes.png)
-- **Confirm Overwrite**
-  ![Confirm Overwrite](Readme-Resources/confirm-overwrite.png)
+Here are a few screenshots of ContactKeeper in action:
+
+![Contacts Overview](Readme-Resources/contacts-overview.png)
+![Add Contact](Readme-Resources/add-contact.png)
+![Edit Contact](Readme-Resources/edit-contact.png)
 
 ### Download
 
