@@ -21,11 +21,11 @@ internal partial class AboutSectionVm : ObservableObject
 
     public static string GithubLink => "https://github.com/thomaswening/ContactKeeper";
 
-    public static string License => "The ContactKeeper project is licensed under the GNU General Public License (GPL) version 3.";
+    public static string License => "ContactKeeper is licensed under the GNU General Public License (GPL) version 3.";
 
     public static string AcknowledgedDependencies => string.Join(", ", acknowledgedDependencies);
 
-    private static IEnumerable<string> acknowledgedDependencies =>
+    private static readonly IEnumerable<string> acknowledgedDependencies =
         [
             "CommunityToolkit.Mvvm",
             "MaterialDesignThemes",
