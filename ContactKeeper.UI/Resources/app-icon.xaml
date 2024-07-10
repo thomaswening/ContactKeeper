@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    
+    <DrawingGroup x:Key="Layer_1">
+        <DrawingGroup.ClipGeometry>
+            <RectangleGeometry Rect="0.0,0.0,169.14006,166.21776"/>
+        </DrawingGroup.ClipGeometry>
+        <DrawingGroup Transform="1.0,0.0,0.0,1.0,-18.844977,-33.974153">
+            <DrawingGroup>
+                <DrawingGroup Transform="1.0,0.0,0.0,1.0,0.527712,0.0156695">
+                    <GeometryDrawing>
+                        <GeometryDrawing.Pen>
+                            <Pen Brush="#ff000000" Thickness="5.29167" DashCap="Flat"/>
+                        </GeometryDrawing.Pen>
+                        <GeometryDrawing.Geometry>
+                            <PathGeometry Figures="M 102.997 62.7658 C 78.6662 63.6202 80.6068 85.721 80.6068 85.721 c 0 0 -3.87281 2.12811 -3.77743 8.18024 c 0.328645 6.65949 6.21033 8.64945 6.21033 8.64945 c 3.76349 9.55338 11.9932 13.6648 19.7057 13.8281 c 7.71371 -0.0909 15.9817 -4.12485 19.8347 -13.6425 c 0 0 5.90011 -1.93465 6.29126 -8.59077 c 0.15219 -6.05097 -3.70046 -8.21534 -3.70046 -8.21534 c 0 0 2.14802 -22.0817 -22.1738 -23.1644 z" FillRule="Nonzero"/>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+                <GeometryDrawing>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#ff000000" Thickness="5.29167" DashCap="Flat"/>
+                    </GeometryDrawing.Pen>
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry Figures="m 103.424 154.118 c -24.1925 -0.45956 -42.5594 -8.35235 -42.5594 -8.35235 c 0 0 -0.377922 -12.6559 8.70977 -20.4253 c 9.80102 -8.37919 19.2732 -10.9287 19.2732 -10.9287 c 0 0 1.23675 11.2488 3.3111 17.071 c 3.02166 8.48113 9.68095 15.6052 11.2654 17.2216 c 1.58443 -1.61642 8.24372 -8.74045 11.2654 -17.2216 c 2.07435 -5.82223 3.3111 -17.071 3.3111 -17.071 c 0 0 9.47216 2.54953 19.2732 10.9287 c 9.08769 7.76936 8.70977 20.4253 8.70977 20.4253 c 0 0 -18.367 7.89279 -42.5594 8.35235 z" FillRule="Nonzero"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+            <GeometryDrawing Brush="#ffffffff">
+                <GeometryDrawing.Geometry>
+                    <EllipseGeometry RadiusX="80.923645" RadiusY="79.52549" Center="103.49084,117.08292"/>
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+            <GeometryDrawing>
+                <GeometryDrawing.Brush>
+                    <LinearGradientBrush MappingMode="Absolute" StartPoint="22.567192,117.08292" EndPoint="184.41448,117.08292">
+                        <GradientStop Color="#ff000074" Offset="0.0"/>
+                        <GradientStop Color="#ffa000a0" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </GeometryDrawing.Brush>
+                <GeometryDrawing.Geometry>
+                    <EllipseGeometry RadiusX="80.923645" RadiusY="79.52549" Center="103.49084,117.08292"/>
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+            <GeometryDrawing Brush="#ff000000">
+                <GeometryDrawing.Geometry>
+                    <PathGeometry Figures="m 103.415 33.9742 a 84.5701 83.1089 0 0 0 -84.57 83.1086 a 84.5701 83.1089 0 0 0 84.57 83.1091 a 84.5701 83.1089 0 0 0 84.57 -83.1091 a 84.5701 83.1089 0 0 0 -84.57 -83.1086 z m 0 7.08277 a 77.363 76.0263 0 0 1 77.3632 76.0259 a 77.363 76.0263 0 0 1 -77.3632 76.0264 a 77.363 76.0263 0 0 1 -77.3627 -76.0264 a 77.363 76.0263 0 0 1 77.3627 -76.0259 z" FillRule="Nonzero"/>
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+            <GeometryDrawing>
+                <GeometryDrawing.Pen>
+                    <Pen Brush="#ffffffff" Thickness="6.90888" DashCap="Flat"/>
+                </GeometryDrawing.Pen>
+                <GeometryDrawing.Geometry>
+                    <PathGeometry Figures="m 103.622 51.4306 c -31.7667 1.11547 -29.2325 29.9706 -29.2325 29.9706 c 0 0 -5.05653 2.778 -4.93201 10.6797 c 0.429084 8.69472 8.10847 11.293 8.10847 11.293 c 4.91366 12.473 15.6579 17.8409 25.7274 18.0542 c 10.0711 -0.11871 20.8662 -5.38562 25.8968 -17.8119 c 0 0 7.70304 -2.52581 8.21373 -11.2161 c 0.19869 -7.90021 -4.83149 -10.7263 -4.83149 -10.7263 c 0 0 2.80444 -28.8295 -28.9504 -30.2432 z M 84.4594 118.839 c 0 0 -12.3664 3.32915 -25.1627 14.2691 c -11.865 10.1438 -11.372 26.6673 -11.372 26.6673 c 0 0 23.9805 10.3051 55.5665 10.9051 c 31.586 -0.59999 55.5658 -10.9051 55.5658 -10.9051 c 0 0 0.49369 -16.5235 -11.3713 -26.6673 c -12.7963 -10.9399 -25.1634 -14.2691 -25.1634 -14.2691 c 0 0 -1.61515 14.6869 -4.32345 22.2885 c -3.94509 11.0731 -12.639 20.3738 -14.7076 22.4842 c -2.06865 -2.11042 -10.7632 -11.4111 -14.7083 -22.4842 c -2.70829 -7.60156 -4.32344 -22.2885 -4.32344 -22.2885 z" FillRule="Nonzero"/>
+                </GeometryDrawing.Geometry>
+            </GeometryDrawing>
+        </DrawingGroup>
+    </DrawingGroup>
+    <DrawingImage Drawing="{StaticResource Layer_1}" x:Key="AppIcon"/>
+</ResourceDictionary>

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 
 using ContactKeeper.UI.Utilities;
 
@@ -13,6 +14,7 @@ namespace ContactKeeper.UI.ViewModels;
 internal partial class MainWindowVm : ObservableObject
 {
     public event EventHandler? DefaultViewModelRequested;
+    public event EventHandler? AboutSectionRequested;
 
     [ObservableProperty]
     private ObservableObject? currentViewModel;
@@ -30,5 +32,11 @@ internal partial class MainWindowVm : ObservableObject
         {
             DefaultViewModelRequested?.Invoke(this, EventArgs.Empty);
         }
+    }
+
+    [RelayCommand]
+    private void ShowAboutSection()
+    {
+        AboutSectionRequested?.Invoke(this, EventArgs.Empty);
     }
 }

@@ -1,6 +1,4 @@
-# ContactKeeper
-
-![App Logo](Readme-Resources/app-logo-800px.png)
+![ContactKeeper](Readme-Resources/app-logo-800px.png)
 
 ContactKeeper is a contact management application for Windows Desktop that allows users to store and manage their contacts. It is built using a layered architecture and follows the MVVM (Model-View-ViewModel) design pattern. The application uses JSON as the data storage format and implements a repository pattern for data access.
 
@@ -14,7 +12,6 @@ ContactKeeper is a contact management application for Windows Desktop that allow
 
 ## Planned Features
 
-- Installer
 - Search contacts by name or other attributes
 - Multiple email addresses and phone numbers per contact
 - Import and export contacts from/to other formats
@@ -115,6 +112,8 @@ The ContactKeeper project uses GitHub Actions for Continuous Integration (CI), e
 
 7. **Upload Artifact**: The published artifacts are uploaded to GitHub, making them available for download. This step ensures that the built application can be easily accessed and deployed.
 
+The following steps only apply if a tag matching the version pattern is pushed to the repository:
+  
 8. **Create GitHub Release**: After the build and test steps are successfully completed, the workflow creates a GitHub Release. This step is performed by the `release` job, which runs on an Ubuntu-latest runner. It uses the `ncipollo/release-action` action to create a new release on GitHub, tagging the current commit with the version number and adding a release name. This makes the release officially available to users and marks a stable version of the application.
 
 9. **Upload Release Assets**: Finally, the workflow uploads the previously built artifacts as assets to the GitHub Release. This ensures that the application's executable files are attached to the release, making it easy for users to download the latest version of the application directly from the GitHub Releases page.

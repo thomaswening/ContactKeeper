@@ -36,4 +36,13 @@ internal class DialogService(IDialogHost dialogHost, IModalDialogViewFactory vie
         await dialogHost.ShowAsync(dialog).ConfigureAwait(false);
     }
 
+    public async Task ShowAboutSectionAsync(AboutSectionVm viewModel)
+    {
+        ArgumentNullException.ThrowIfNull(viewModel, nameof(viewModel));
+
+        var dialog = viewFactory.CreateAboutSectionView();
+        dialog.DataContext = viewModel;
+
+        await dialogHost.ShowAsync(dialog).ConfigureAwait(false);
+    }
 }

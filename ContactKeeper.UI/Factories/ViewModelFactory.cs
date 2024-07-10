@@ -61,6 +61,7 @@ internal class ViewModelFactory
 
         var mainWindowVm = new MainWindowVm(contactsOverviewVm);
         mainWindowVm.DefaultViewModelRequested += async (s, e) => mainWindowVm.CurrentViewModel = await CreateContactsOverviewVmAsync();
+        mainWindowVm.AboutSectionRequested += async (s, e) => await dialogService.ShowAboutSectionAsync(CreateAboutSectionVm());
         navigationService.CurrentViewModelChanged += (s, e) => mainWindowVm.CurrentViewModel = navigationService.CurrentViewModel;
 
         return mainWindowVm;
@@ -109,6 +110,12 @@ internal class ViewModelFactory
 
         return viewModel;
     }
+
+    /// <summary>
+    /// Creates a new <see cref="AboutSectionVm"/> view model.
+    /// </summary>
+    public AboutSectionVm CreateAboutSectionVm() => new();
+
 
     private async Task ShowModalDialogAsync(Func<ModalDialogVm> creationMethod, AwaitableEventArgs<bool> args)
     {

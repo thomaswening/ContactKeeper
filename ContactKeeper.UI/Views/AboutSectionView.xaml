@@ -1,0 +1,130 @@
+﻿<UserControl x:Class="ContactKeeper.UI.Views.AboutSectionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:ContactKeeper.UI.Views"
+             xmlns:viewmodels="clr-namespace:ContactKeeper.UI.ViewModels"
+             xmlns:converters="clr-namespace:ContactKeeper.UI.ValueConverters"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:behaviors="clr-namespace:ContactKeeper.UI.Behaviors"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewmodels:AboutSectionVm, IsDesignTimeCreatable=True}"
+             d:DesignHeight="600"
+             d:DesignWidth="450"
+             d:Background="White"
+             Width="450">
+
+    <UserControl.DataContext>
+        <viewmodels:AboutSectionVm />
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources/VectorGraphics.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:MailToHyperLinkConverter x:Key="MailToHyperLink" />
+
+            <!--TextBlock Style-->
+            <Style TargetType="{x:Type TextBlock}"
+                   BasedOn="{StaticResource MaterialDesignBodyLargeTextBlock}">
+
+                <Setter Property="TextAlignment"
+                        Value="Left" />
+
+                <Setter Property="TextWrapping"
+                        Value="Wrap" />
+
+                <Setter Property="IsHyphenationEnabled"
+                        Value="True" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!--Header-->
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="0"
+                    HorizontalAlignment="Center"
+                    Margin="0 0 0 20">
+
+            <Image Source="{StaticResource AppIcon}"
+                   VerticalAlignment="Center"
+                   Margin="0 0 10 0"
+                   Width="50" />
+
+            <TextBlock Text="About ContactKeeper"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Style="{StaticResource MaterialDesignHeadline5TextBlock}" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1">
+
+            <!--Description-->
+            <TextBlock Text="{Binding ApplicationDescription}"
+                       TextAlignment="Center"
+                       Margin="0 0 0 20" />
+
+            <!--Version-->
+            <TextBlock Margin="0 0 0 10">
+                <Run FontWeight="Bold">Version: </Run>
+                <Run Text="{Binding Version, Mode=OneWay}" />
+            </TextBlock>
+
+            <!--Developer-->
+            <TextBlock Margin="0 0 0 10">
+                <Run FontWeight="Bold">Developer: </Run>
+                <Run Text="{Binding Developer, Mode=OneWay}" />
+            </TextBlock>
+
+            <!--Contact Info-->
+            <TextBlock Margin="0 0 0 10">
+                <Run FontWeight="Bold">Contact: </Run>
+                <Hyperlink NavigateUri="{Binding Contact, Converter={StaticResource MailToHyperLink}}">
+                    <TextBlock Text="{Binding Contact}" />
+                    
+                    <i:Interaction.Behaviors>
+                        <behaviors:HyperlinkNavigationBehavior />
+                    </i:Interaction.Behaviors>                    
+                </Hyperlink>
+            </TextBlock>
+
+            <!--GitHub Link-->
+            <TextBlock Margin="0 0 0 10">
+                For more information and to see current and planned features, please check the 
+                <Hyperlink NavigateUri="{Binding GithubLink}">
+                    README on GitHub
+                    
+                    <i:Interaction.Behaviors>
+                        <behaviors:HyperlinkNavigationBehavior />
+                    </i:Interaction.Behaviors>
+                </Hyperlink>.
+            </TextBlock>
+
+            <!--License-->
+            <TextBlock Margin="0 0 0 20">
+                <Run FontWeight="Bold">License: </Run>
+                <Run Text="{Binding License, Mode=OneWay}" />
+            </TextBlock>
+
+            <!-- Acknowledgments Section -->
+            <TextBlock FontWeight="Bold">Acknowledgments:</TextBlock>
+            <TextBlock Margin="0 0 0 10">
+                This project uses the following open-source projects.
+            </TextBlock>
+
+            <TextBlock Text="{Binding AcknowledgedDependencies}"
+                       FontSize="14"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

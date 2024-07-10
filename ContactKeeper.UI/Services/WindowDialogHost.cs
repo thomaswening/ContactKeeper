@@ -28,27 +28,14 @@ internal class WindowDialogHost : IDialogHost
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="dialog"/> is <see langword="null"/>.</exception>
     public async Task ShowAsync(IModalDialogView dialog)
     {
-        ArgumentNullException.ThrowIfNull(dialog, nameof(dialog));        
+        ArgumentNullException.ThrowIfNull(dialog, nameof(dialog));
 
         var window = new DialogWindow
         {
             Content = dialog
         };
 
-        if (openDialogWindow is not null)
-        {
-            QueueDialog(window);
-        }
-
-        openDialogWindow = window;
-
-        await Task.Run(() =>
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                window.ShowDialog();
-            });
-        }).ConfigureAwait(false);
+        await ShowDialogWindowAsync(window);
     }
 
     /// <summary>
@@ -57,6 +44,45 @@ internal class WindowDialogHost : IDialogHost
     public void Close()
     {
         openDialogWindow?.Close();
+    }
+
+    private async Task ShowDialogWindowAsync(DialogWindow window)
+    {
+        if (openDialogWindow is null)
+        {
+            openDialogWindow = window;
+            await ShowDialogAsync(window);
+        }
+        else
+        {
+            QueueDialog(window);
+        }
+    }
+
+    private async Task ShowDialogAsync(DialogWindow window)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            window.Closed += (sender, args) =>
+            {
+                tcs.SetResult(true);
+            };
+            window.ShowDialog();
+        });
+
+        await tcs.Task;
+
+        await Application.Current.Dispatcher.Invoke(async () =>
+        {
+            openDialogWindow = null;
+            if (dialogQueue.Count != 0)
+            {
+                var nextDialog = dialogQueue.Dequeue();
+                await ShowDialogWindowAsync(nextDialog);
+            }
+        });
     }
 
     private void QueueDialog(DialogWindow window)
