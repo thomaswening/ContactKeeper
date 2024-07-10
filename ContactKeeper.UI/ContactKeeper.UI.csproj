@@ -42,4 +42,8 @@
 	  <Resource Include="Resources\app-icon.ico" />
 	  <Resource Include="Resources\app-icon.svg" />
 	</ItemGroup>
+
+	<PropertyGroup>
+		<AssemblyName>ContactKeeper</AssemblyName>
+	</PropertyGroup>
 </Project>
