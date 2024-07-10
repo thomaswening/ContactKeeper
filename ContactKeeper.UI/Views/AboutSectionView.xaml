@@ -28,6 +28,7 @@
 
             <converters:MailToHyperLinkConverter x:Key="MailToHyperLink" />
 
+            <!--TextBlock Style-->
             <Style TargetType="{x:Type TextBlock}"
                    BasedOn="{StaticResource MaterialDesignBodyLargeTextBlock}">
 
