@@ -88,6 +88,22 @@ internal class EditContactManager(IContactService contactService, ILogger logger
     public bool CheckForUnsavedChanges(ContactInfo contactInfoToCheck, ContactVm? contactToCompare)
     {
         ArgumentNullException.ThrowIfNull(contactInfoToCheck, nameof(contactInfoToCheck));
-        return contactToCompare is null || !contactInfoToCheck.IsMatch(ContactMapper.Map(contactToCompare));
+
+        bool hasChanges;
+
+        // if it's a new contact, check if any of the fields are filled in
+        if (contactToCompare is null)
+        {
+            hasChanges = !string.IsNullOrEmpty(contactInfoToCheck.FirstName) 
+                || !string.IsNullOrEmpty(contactInfoToCheck.LastName)
+                || !string.IsNullOrEmpty(contactInfoToCheck.Phone)
+                || !string.IsNullOrEmpty(contactInfoToCheck.Email);
+        }
+        else
+        {
+            hasChanges = !contactInfoToCheck.IsMatch(ContactMapper.Map(contactToCompare));
+        }
+
+        return hasChanges;
     }
 }
