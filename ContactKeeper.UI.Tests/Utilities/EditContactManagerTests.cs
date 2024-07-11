@@ -214,7 +214,21 @@ internal class EditContactManagerTests
     }
 
     [Test]
-    public void CheckForUnsavedChanges_WhenContactToCompareIsNull_ReturnsTrue()
+    public void CheckForUnsavedChanges_WhenContactToCompareIsNullAndContactInfoPropertiesAreEmpty_ReturnsFalse()
+    {
+        // Arrange
+        var contactInfo = new ContactInfo();
+        ContactVm? contactToCompare = null;
+
+        // Act
+        var result = contactManager.CheckForUnsavedChanges(contactInfo, contactToCompare);
+
+        // Assert
+        Assert.That(result, Is.False);
+    }
+
+    [Test]
+    public void CheckForUnsavedChanges_WhenContactToCompareIsNullAndContactInfoPropertiesAreNotEmpty_ReturnsTrue()
     {
         // Arrange
         var contactInfo = AutoFaker.Generate<ContactInfo>();
