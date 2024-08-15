@@ -79,6 +79,8 @@ public partial class App : Application
             .WriteTo.Debug()
             .CreateLogger();
 
+        logger.Information($"Starting application. Version information:\n{Utilities.VersionInfo.AsPrettyString()}");
+
         return logger;
     }
 

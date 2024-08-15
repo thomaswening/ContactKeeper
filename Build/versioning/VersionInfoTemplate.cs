@@ -30,6 +30,6 @@ public static class VersionInfo
     /// </summary>
     public static string AsPrettyString()
     {{
-        return $"Version: {{Version}}\nBranch: {{Branch}}\nCommit: {{CommitSha}}\nDate: {{CommitDateTime}}";
+        return $"Version: {{Version}}\nBranch: {{Branch}}\nCommit: {{CommitSha}}\nCommit Date: {{CommitDateTime}}";
     }}
 }}

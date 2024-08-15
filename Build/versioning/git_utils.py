@@ -37,37 +37,36 @@ def validate_versioning_rules(tags):
         return
 
     for i in range(1, len(tags)):
-        current_version = parse_version(tags[i])
-        previous_version = parse_version(tags[i - 1])
+        current_version = parse_version(tags[i - 1])
+        previous_version = parse_version(tags[i])
 
         current_major, current_minor, current_patch = current_version
         previous_major, previous_minor, previous_patch = previous_version
 
-        if current_version <= previous_version:
+        # Ensure version progression is valid
+        if (current_major < previous_major 
+            or (current_major == previous_major and current_minor < previous_minor) 
+            or (current_major == previous_major and current_minor == previous_minor and current_patch <= previous_patch)):
+
             raise VersioningError(
                 f"Version {tags[i]} is not higher than the previous version {tags[i - 1]}."
             )
+        
+        # Ensure major version bumps reset minor and patch versions
+        if current_major != previous_major and not (current_minor == 0 and current_patch == 0):
 
-        if current_major != previous_major:
-            if current_minor != 0 or current_patch != 0:
-                raise VersioningError(
-                    f"Invalid version bump from {tags[i - 1]} to {tags[i]}: "
-                    f"minor and patch versions must be 0 when major version is bumped."
-                )
+            raise VersioningError(
+                f"Invalid version bump from {tags[i - 1]} to {tags[i]}: "
+                f"minor version and patch version must be 0 when major version is bumped."
+            )
+        
+        # Ensure minor version bumps reset patch version
+        if (current_major == previous_major and current_minor != previous_minor and current_patch != 0):
 
-        elif current_minor != previous_minor:
-            if current_patch != 0 or current_major != previous_major:
-                raise VersioningError(
-                    f"Invalid version bump from {tags[i - 1]} to {tags[i]}: "
-                    f"patch version must be 0 and major version must remain the same when minor version is bumped."
-                )
-
-        elif current_patch != previous_patch:
-            if current_major != previous_major or current_minor != previous_minor:
-                raise VersioningError(
-                    f"Invalid version bump from {tags[i - 1]} to {tags[i]}: "
-                    f"major and minor versions must remain the same when patch version is bumped."
-                )
+            raise VersioningError(
+                f"Invalid version bump from {tags[i - 1]} to {tags[i]}: "
+                f"patch version must be 0 when minor version is bumped."
+            )
 
     logging.info("Versioning rules validation passed.")
 
@@ -89,7 +88,7 @@ def get_latest_version_tag():
         return latest_tag[1:]
     
     except VersioningError as e:
-        logging.error("Versioning rules validation failed.")
+        logging.error(f"Versioning rules validation failed: {e}")
         raise
 
     except Exception as e:
@@ -98,7 +97,7 @@ def get_latest_version_tag():
 
 def get_git_info():
     """Collect and format Git-related information including the version, commit date, SHA, and branch name."""
-    
+
     try:
         version = get_latest_version_tag()
         last_commit_date = run_git_command(['log', '-1', '--format=%ci'])
