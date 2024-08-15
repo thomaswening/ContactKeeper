@@ -1,6 +1,7 @@
 import subprocess
 import logging
 import re
+import os
 from datetime import datetime
 
 class VersioningError(Exception):
@@ -75,17 +76,25 @@ def get_latest_version_tag():
 
     try:
         logging.info("Retrieving the latest version tag...")
-        tags = run_git_command(['tag', '--list', '--sort=-creatordate']).splitlines()
-        valid_tags = [tag for tag in tags if re.match(r'v(\d+\.\d+\.\d+)', tag)]
 
-        if not valid_tags:
-            logging.warning("No version tags found, defaulting to 'v0.0.0'.")
+        # Ensure we have all tags (important for CI environments with shallow clones)
+        run_git_command(['fetch', '--tags', '--force'])
+
+        # Try to describe the latest tag
+        try:
+            latest_tag = run_git_command(['describe', '--tags', '--abbrev=0'])
+        except VersioningError:
+            logging.warning("No valid tags found or no tags exist. Defaulting to '0.0.0'.")
             return '0.0.0'
 
-        validate_versioning_rules(valid_tags)
-        latest_tag = valid_tags[0]
+        # Validate the retrieved tag
+        if not re.match(r'v(\d+\.\d+\.\d+)', latest_tag):
+            logging.warning(f"Latest tag '{latest_tag}' does not match version pattern, defaulting to '0.0.0'.")
+            return '0.0.0'
+
+        validate_versioning_rules([latest_tag])
         logging.info(f"Found latest version tag: {latest_tag}")
-        return latest_tag[1:]
+        return latest_tag[1:]  # Strip the 'v' from 'vX.Y.Z'
     
     except VersioningError as e:
         logging.error(f"Versioning rules validation failed: {e}")
@@ -100,18 +109,29 @@ def get_git_info():
 
     try:
         version = get_latest_version_tag()
+
+        # Use GitHub Actions environment variables if available
+        current_branch = os.getenv('GITHUB_HEAD_REF') or os.getenv('GITHUB_REF_NAME')
+        commit_sha = os.getenv('GITHUB_SHA')
+        
+        if not current_branch:
+            # Fallback to using git command if not in a CI environment
+            current_branch = run_git_command(['rev-parse', '--abbrev-ref', 'HEAD'])
+
+        if not commit_sha:
+            # As a fallback, try to get the SHA using git commands
+            commit_sha = run_git_command(['rev-parse', 'HEAD'])
+
         last_commit_date = run_git_command(['log', '-1', '--format=%ci'])
-        last_commit_sha = run_git_command(['rev-parse', 'HEAD'])
-        current_branch = run_git_command(['rev-parse', '--abbrev-ref', 'HEAD'])
 
         commit_datetime = datetime.strptime(last_commit_date, "%Y-%m-%d %H:%M:%S %z")
         formatted_commit_date = commit_datetime.strftime("%d.%m.%Y-%H:%M:%S%z")
 
         logging.info(f"Version: {version}, Last Commit Date: {formatted_commit_date}, "
-                     f"Commit SHA: {last_commit_sha}, Branch: {current_branch}")
+                     f"Commit SHA: {commit_sha}, Branch: {current_branch}")
 
-        return version, formatted_commit_date, last_commit_sha, current_branch
+        return version, formatted_commit_date, commit_sha, current_branch
     
     except VersioningError as e:
-        logging.error("Failed to retrieve git information.")
+        logging.error(f"Failed to retrieve git information. {e}")
         raise
