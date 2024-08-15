@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
+using ContactKeeper.UI.Utilities;
 
 namespace ContactKeeper.UI.ViewModels;
 
@@ -13,7 +19,7 @@ internal partial class AboutSectionVm : ObservableObject
     public static string ApplicationDescription => "ContactKeeper is a contact management application for Windows Desktop, " +
         "designed to help users store and manage their contacts efficiently.";
 
-    public static string Version => "1.0.0";
+    public static string Version => VersionInfo.Version;    
 
     public static string Developer => "Thomas Wening";
 
@@ -33,6 +39,12 @@ internal partial class AboutSectionVm : ObservableObject
             "AutoBogus",
             "NSubstitute",
             "NUnit",
-            "NUnit3TestAdapter"
+            "NUnit3TestAdapter",
+            "GitVersion"
         ];
+
+    private static string FullVersionInformation => VersionInfo.AsPrettyString();
+
+    [RelayCommand]
+    private static void CopyVersionInfoToClipboad() => Clipboard.SetText(FullVersionInformation);
 }

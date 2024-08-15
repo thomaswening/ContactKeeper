@@ -41,6 +41,48 @@
                 <Setter Property="IsHyphenationEnabled"
                         Value="True" />
             </Style>
+
+            <!-- Clipboard Icon animation -->
+            <Storyboard x:Key="ClipboardIconStoryboard">
+                
+                <!-- Fade out CopyIcon -->
+                <DoubleAnimation Storyboard.TargetName="CopyIcon"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="1.0"
+                                 To="0.0"
+                                 Duration="0:0:0.3" />
+
+                <!-- Fade in CheckIcon -->
+                <DoubleAnimation Storyboard.TargetName="CheckIcon"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0.0"
+                                 To="1.0"
+                                 Duration="0:0:0.3"
+                                 BeginTime="0:0:0" />
+
+                <!-- Delay for 3 seconds -->
+                <DoubleAnimation Storyboard.TargetName="CheckIcon"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="1.0"
+                                 To="1.0"
+                                 Duration="0:0:3" />
+
+                <!-- Fade out CheckIcon -->
+                <DoubleAnimation Storyboard.TargetName="CheckIcon"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="1.0"
+                                 To="0.0"
+                                 Duration="0:0:0.3"
+                                 BeginTime="0:0:3" />
+
+                <!-- Fade in CopyIcon -->
+                <DoubleAnimation Storyboard.TargetName="CopyIcon"
+                                 Storyboard.TargetProperty="Opacity"
+                                 From="0.0"
+                                 To="1.0"
+                                 Duration="0:0:0.3"
+                                 BeginTime="0:0:3" />
+            </Storyboard>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -76,10 +118,51 @@
                        Margin="0 0 0 20" />
 
             <!--Version-->
-            <TextBlock Margin="0 0 0 10">
-                <Run FontWeight="Bold">Version: </Run>
-                <Run Text="{Binding Version, Mode=OneWay}" />
-            </TextBlock>
+            <Grid Margin="0 0 0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Margin="0 0 10 0"
+                           VerticalAlignment="Center">
+                    
+                    <Run FontWeight="Bold">Version: </Run>
+                    <Run Text="{Binding Version, Mode=OneWay}" />                    
+                </TextBlock>
+
+                <Button Grid.Column="1"
+                        HorizontalAlignment="Left"
+                        Padding="0"
+                        ToolTip="Copy version info to clipboard"
+                        Style="{StaticResource MaterialDesignFlatButton}"
+                        Command="{Binding CopyVersionInfoToClipboadCommand}">
+
+                    <Grid>
+                        <!-- ContentCopy Icon, initially visible -->
+                        <materialDesign:PackIcon x:Name="CopyIcon"
+                                                 Kind="ContentCopy"
+                                                 Width="20"
+                                                 Height="20"
+                                                 Opacity="1" />
+
+                        <!-- CheckMark Icon, initially hidden -->
+                        <materialDesign:PackIcon x:Name="CheckIcon"
+                                                 Kind="Check"
+                                                 Width="20"
+                                                 Height="20"
+                                                 Opacity="0" />
+                    </Grid>
+
+                    <Button.Triggers>
+                        <EventTrigger RoutedEvent="Button.Click">
+                            <BeginStoryboard Storyboard="{StaticResource ClipboardIconStoryboard}" />
+                        </EventTrigger>
+                    </Button.Triggers>
+                </Button>
+
+            </Grid>
 
             <!--Developer-->
             <TextBlock Margin="0 0 0 10">

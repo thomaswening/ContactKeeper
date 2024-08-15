@@ -8,7 +8,7 @@
         xmlns:viewmodels="clr-namespace:ContactKeeper.UI.ViewModels"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowVm}"
-        Title="ContactKeeper" 
+        Title="{Binding MainWindowTitle}" 
         Height="500" 
         Width="600"
         MinHeight="500"

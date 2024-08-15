@@ -48,20 +48,21 @@ ContactKeeper is a contact management application for Windows Desktop that allow
 ## Dependencies
 
 - .NET Framework 8.0 or higher
-- CommunityToolkit.Mvvm v.8.2.2
+- CommunityToolkit.Mvvm 8.2.2
 - MaterialDesignThemes v.5.0.1-ci662
-- Microsoft.Xaml.Behaviors.Wpf v.1.1.122
-- Serilog v.4.0.0
-- Serilog.Extensions.Logging v.8.0.1-dev-10391
-- Serilog.Sinks.Debug v.3.0.0
-- Serilog.Sinks.File v.5.0.1-dev-00972
+- MaterialDesignThemes 5.0.1-ci662
+- Microsoft.Xaml.Behaviors.Wpf 1.1.122
+- Serilog 4.0.0
+- Serilog.Extensions.Logging 8.0.1-dev-10391
+- Serilog.Sinks.Debug 3.0.0
+- Serilog.Sinks.File 5.0.1-dev-00972
 
 And for testing:
-- AutoBogus v.2.13.1
-- Microsoft.NET.Test.Sdk v.17.10.0
-- NSubstitute v.5.1.0
-- NUnit v.4.1.0
-- NUnit3TestAdapter v.4.5.0
+- AutoBogus 2.13.1
+- Microsoft.NET.Test.Sdk 17.10.0
+- NSubstitute 5.1.0
+- NUnit 4.1.0
+- NUnit3TestAdapter 4.5.0
 
 ## Building the Project
 
@@ -93,6 +94,16 @@ The UI layer consists of XAML views and corresponding view models. The views are
 The Core layer contains the models and services that represent the contact entities and perform the necessary operations on them. The services communicate with the repositories in the Infrastructure layer to retrieve and persist the contact data.
 
 The Infrastructure layer provides the implementation of the repositories and other utilities. The JSONContactRepository class is responsible for reading and writing the contact data to the JSON file.
+
+## Application Versioning
+
+ContactKeeper uses semantic versioning with Git tags in the format `v{major}.{minor}.{patch}` (e.g., `v1.2.3`). These tags should only be created on the `main` branch. The pre-build step handles versioning automatically, updating the assembly, file, informational, and product versions in the build artifacts, `.csproj` files, and generating a `VersionInfo.cs` class for runtime access.
+
+Creating a version tag on `main` also triggers the CI pipeline's release job (see below), which builds, tests, and publishes the new version as a GitHub Release.
+
+For more details on versioning and validation, see the [versioning tool's README](build/README.md).
+
+At runtime, the application version is visible in the main window title bar or in the `About` section, from which it may be copied including additional metadata such as branch name, as well as SHA and datetime of the current commit.
 
 ## Continuous Integration Workflow
 
