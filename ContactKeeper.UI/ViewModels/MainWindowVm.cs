@@ -16,6 +16,8 @@ internal partial class MainWindowVm : ObservableObject
     public event EventHandler? DefaultViewModelRequested;
     public event EventHandler? AboutSectionRequested;
 
+    public static string MainWindowTitle => $"ContactKeeper {VersionInfo.Version}";
+
     [ObservableProperty]
     private ObservableObject? currentViewModel;
 

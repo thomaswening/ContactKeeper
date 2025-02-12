@@ -1,11 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <AssemblyVersion>0.0.0</AssemblyVersion>
+    <FileVersion>0.0.0</FileVersion>
+    <InformationalVersion>0.0.0</InformationalVersion>
+    <ProductVersion>0.0.0</ProductVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Serilog" Version="4.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
@@ -13,9 +15,10 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="System.IO.Abstractions" Version="21.0.22" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\ContactKeeper.Core\ContactKeeper.Core.csproj" />
   </ItemGroup>
-
+  <Target Name="PreBuild" BeforeTargets="BeforeBuild">
+    <Exec Command="python ..\build\versioning\versioning.py" />
+  </Target>
 </Project>

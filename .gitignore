@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/ContactKeeper.Core/Utilities/VersionInfo.cs
+/ContactKeeper.UI/Utilities/VersionInfo.cs
+/ContactKeeper.Infrastructure/Utilities/VersionInfo.cs
+
