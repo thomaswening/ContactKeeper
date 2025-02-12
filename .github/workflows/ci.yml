@@ -74,7 +74,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref }}
           name: Release ${{ github.ref }}
-          bodyFile: release-notes.md
+          bodyFile: ${{ github.workspace }}/release_notes.md
           draft: false
           prerelease: false
 
