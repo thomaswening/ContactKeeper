@@ -73,21 +73,21 @@ jobs:
       if: always() && hashFiles('logs/test_core_${{ matrix.architecture }}.log') != ''
       uses: actions/upload-artifact@v4
       with:
-        name: Logs/Test-Core-${{ matrix.architecture }}
+        name: Logs-Test-Core-${{ matrix.architecture }}
         path: logs/test_core_${{ matrix.architecture }}.log
     
     - name: Upload test logs for Infrastructure
       if: always() && hashFiles('logs/test_infra_${{ matrix.architecture }}.log') != ''
       uses: actions/upload-artifact@v4
       with:
-        name: Logs/Test-Infrastructure-${{ matrix.architecture }}
+        name: Logs-Test-Infrastructure-${{ matrix.architecture }}
         path: logs/test_infra_${{ matrix.architecture }}.log
     
     - name: Upload test logs for UI
       if: always() && hashFiles('logs/test_ui_${{ matrix.architecture }}.log') != ''
       uses: actions/upload-artifact@v4
       with:
-        name: Logs/Test-UI-${{ matrix.architecture }}
+        name: Logs-Test-UI-${{ matrix.architecture }}
         path: logs/test_ui_${{ matrix.architecture }}.log
 
   build:
@@ -118,7 +118,7 @@ jobs:
       if: always() && hashFiles('logs/build_${{ matrix.architecture }}_${{ matrix.configuration }}.log') != ''
       uses: actions/upload-artifact@v4
       with:
-        name: Logs/Build-${{ matrix.architecture }}-${{ matrix.configuration }}
+        name: Logs-Build-${{ matrix.architecture }}-${{ matrix.configuration }}
         path: logs/build_${{ matrix.architecture }}_${{ matrix.configuration }}.log
 
     # Publish artifact (only for Release builds)
@@ -133,7 +133,7 @@ jobs:
       if: always() && matrix.configuration == 'Release' && hashFiles('logs/publish_${{ matrix.architecture }}.log') != ''
       uses: actions/upload-artifact@v4
       with:
-        name: Logs/Publish-${{ matrix.architecture }}
+        name: Logs-Publish-${{ matrix.architecture }}
         path: logs/publish_${{ matrix.architecture }}.log
 
     # Upload build artifacts (organized by architecture and configuration)
