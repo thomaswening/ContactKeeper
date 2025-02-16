@@ -40,7 +40,10 @@ jobs:
 
     # Restore dependencies and capture logs
     - name: Restore dependencies
-      run: dotnet restore > logs/restore_${{ matrix.architecture }}.log 2>&1
+      run: |
+        mkdir -p logs
+        dotnet restore > logs/restore_${{ matrix.architecture }}.log 2>&1
+      shell: bash
 
     # Build Debug configuration for testing
     - name: Build Debug for Tests
@@ -48,7 +51,22 @@ jobs:
 
     # Run tests and capture logs
     - name: Run tests for Core
-      run: dotnet test ContactKeeper.Core.Tests/ContactKeeper.Core.Tests.csproj --no-build --verbosity normal > logs/test_core_${{ matrix.architecture }}.log 2>&1
+      run: |
+        mkdir -p logs
+        dotnet test ContactKeeper.Core.Tests/ContactKeeper.Core.Tests.csproj --no-build --verbosity normal > logs/test_core_${{ matrix.architecture }}.log 2>&1
+      shell: bash
+    
+    - name: Run tests for Infrastructure
+      run: |
+        mkdir -p logs
+        dotnet test ContactKeeper.Infrastructure.Tests/ContactKeeper.Infrastructure.Tests.csproj --no-build --verbosity normal > logs/test_infra_${{ matrix.architecture }}.log 2>&1
+      shell: bash
+    
+    - name: Run tests for UI
+      run: |
+        mkdir -p logs
+        dotnet test ContactKeeper.UI.Tests/ContactKeeper.UI.Tests.csproj --no-build --verbosity normal > logs/test_ui_${{ matrix.architecture }}.log 2>&1
+      shell: bash
 
     # Upload test logs only if they exist
     - name: Upload test logs for Core
@@ -57,6 +75,20 @@ jobs:
       with:
         name: Logs/Test-Core-${{ matrix.architecture }}
         path: logs/test_core_${{ matrix.architecture }}.log
+    
+    - name: Upload test logs for Infrastructure
+      if: always() && hashFiles('logs/test_infra_${{ matrix.architecture }}.log') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: Logs/Test-Infrastructure-${{ matrix.architecture }}
+        path: logs/test_infra_${{ matrix.architecture }}.log
+    
+    - name: Upload test logs for UI
+      if: always() && hashFiles('logs/test_ui_${{ matrix.architecture }}.log') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: Logs/Test-UI-${{ matrix.architecture }}
+        path: logs/test_ui_${{ matrix.architecture }}.log
 
   build:
     needs: test  # Only run if tests pass
@@ -76,7 +108,10 @@ jobs:
 
     # Build application and capture logs
     - name: Build solution
-      run: dotnet build --configuration ${{ matrix.configuration }} --no-restore -p:DebugType=none > logs/build_${{ matrix.architecture }}_${{ matrix.configuration }}.log 2>&1
+      run: |
+        mkdir -p logs
+        dotnet build --configuration ${{ matrix.configuration }} --no-restore -p:DebugType=none > logs/build_${{ matrix.architecture }}_${{ matrix.configuration }}.log 2>&1
+      shell: bash
 
     # Upload build logs only if they exist
     - name: Upload build logs
@@ -89,8 +124,10 @@ jobs:
     # Publish artifact (only for Release builds)
     - name: Publish artifact
       if: always() && matrix.configuration == 'Release'
-      run: dotnet publish ContactKeeper.UI/ContactKeeper.UI.csproj -c Release -o artifacts/${{ matrix.architecture }}/Release --self-contained -r ${{ matrix.architecture }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none > logs/publish_${{ matrix.architecture }}.log 2>&1
-
+      run: |
+        mkdir -p logs
+        dotnet publish ContactKeeper.UI/ContactKeeper.UI.csproj -c Release -o artifacts/${{ matrix.architecture }}/Release --self-contained -r ${{ matrix.architecture }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none > logs/publish_${{ matrix.architecture }}.log 2>&1
+      shell: bash
     # Upload publish logs only if they exist
     - name: Upload publish logs
       if: always() && matrix.configuration == 'Release' && hashFiles('logs/publish_${{ matrix.architecture }}.log') != ''
