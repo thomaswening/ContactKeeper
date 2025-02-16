@@ -1,4 +1,16 @@
-name: .NET 8 CI
+# This workflow automates the CI/CD process for the ContactKeeper application.
+# It builds, tests, and publishes the application for multiple architectures.
+#
+# Features:
+# - Builds Debug and Release configurations (only Release goes to GitHub Releases)
+# - Runs unit tests on Debug builds only
+# - Restores dependencies (with caching for faster builds)
+# - Publishes self-contained binaries for win-x64, win-x86, and win-arm64
+# - Uploads build artifacts for later retrieval
+# - Creates a GitHub Release when a new version tag (vX.Y.Z) is pushed
+# - Uploads logs for build, test, and publish steps to help with debugging
+
+name: .NET 8 CI/CD for ContactKeeper
 
 on:
   push:
@@ -18,6 +30,7 @@ jobs:
     strategy:
       matrix:
         architecture: [win-x64, win-x86, win-arm64]
+        configuration: [Debug, Release]  # Now building both Debug and Release
 
     steps:
     - name: Checkout code
@@ -26,36 +39,108 @@ jobs:
         fetch-depth: 0
         ref: ${{ github.event.pull_request.head.ref }}
 
+    # Cache NuGet dependencies
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: nuget-${{ runner.os }}-${{ hashFiles('**/packages.lock.json', '**/*.csproj') }}
+        restore-keys: |
+          nuget-${{ runner.os }}-
+
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.x'
 
+    # Cache MSBuild outputs to speed up incremental builds
+    - name: Cache MSBuild binaries
+      uses: actions/cache@v4
+      with:
+        path: |
+          **/bin
+          **/obj
+        key: msbuild-${{ runner.os }}-${{ matrix.architecture }}-${{ matrix.configuration }}-${{ hashFiles('**/*.csproj', '**/*.sln') }}
+        restore-keys: |
+          msbuild-${{ runner.os }}-${{ matrix.architecture }}-${{ matrix.configuration }}-
+
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore > restore_${{ matrix.architecture }}_${{ matrix.configuration }}.log 2>&1
 
     - name: Build solution
-      run: dotnet build --no-restore -p:DebugType=none
+      run: dotnet build --configuration ${{ matrix.configuration }} --no-restore -p:DebugType=none > build_${{ matrix.architecture }}_${{ matrix.configuration }}.log 2>&1
 
+    # Run tests only on Debug builds
     - name: Run tests for Core
-      run: dotnet test ContactKeeper.Core.Tests/ContactKeeper.Core.Tests.csproj --no-build --verbosity normal
+      if: matrix.configuration == 'Debug'
+      run: dotnet test ContactKeeper.Core.Tests/ContactKeeper.Core.Tests.csproj --no-build --verbosity normal > test_core_${{ matrix.architecture }}.log 2>&1
 
     - name: Run tests for Infrastructure
-      run: dotnet test ContactKeeper.Infrastructure.Tests/ContactKeeper.Infrastructure.Tests.csproj --no-build --verbosity normal
+      if: matrix.configuration == 'Debug'
+      run: dotnet test ContactKeeper.Infrastructure.Tests/ContactKeeper.Infrastructure.Tests.csproj --no-build --verbosity normal > test_infra_${{ matrix.architecture }}.log 2>&1
 
     - name: Run tests for UI
-      run: dotnet test ContactKeeper.UI.Tests/ContactKeeper.UI.Tests.csproj --no-build --verbosity normal
+      if: matrix.configuration == 'Debug'
+      run: dotnet test ContactKeeper.UI.Tests/ContactKeeper.UI.Tests.csproj --no-build --verbosity normal > test_ui_${{ matrix.architecture }}.log 2>&1
 
+    # Publish only Release builds
     - name: Publish artifact
-      if: always()
-      run: dotnet publish ContactKeeper.UI/ContactKeeper.UI.csproj -c Release -o ${{github.workspace}}/publish/${{ matrix.architecture }} --self-contained -r ${{ matrix.architecture }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none
+      if: always() && matrix.configuration == 'Release'
+      run: dotnet publish ContactKeeper.UI/ContactKeeper.UI.csproj -c Release -o ${{github.workspace}}/publish/${{ matrix.architecture }} --self-contained -r ${{ matrix.architecture }} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none > publish_${{ matrix.architecture }}.log 2>&1
 
-    - name: Upload artifact
+    # Upload all build artifacts
+    - name: Upload build artifacts
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: ContactKeeper-${{ matrix.architecture }}
-        path: ${{github.workspace}}/publish/${{ matrix.architecture }}
+        name: ContactKeeper-${{ matrix.architecture }}-${{ matrix.configuration }}
+        path: |
+          **/bin/${{ matrix.configuration }}/
+
+    # Upload restore logs (only if they exist)
+    - name: Upload restore logs
+      if: always() && hashFiles('restore_${{ matrix.architecture }}_${{ matrix.configuration }}.log') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: Restore-Logs-${{ matrix.architecture }}-${{ matrix.configuration }}
+        path: restore_${{ matrix.architecture }}_${{ matrix.configuration }}.log
+
+    - name: Upload build logs
+      if: always() && hashFiles('build_${{ matrix.architecture }}_${{ matrix.configuration }}.log') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: Build-Logs-${{ matrix.architecture }}-${{ matrix.configuration }}
+        path: build_${{ matrix.architecture }}_${{ matrix.configuration }}.log
+
+    # Upload test logs (only Debug)
+    - name: Upload test logs for Core
+      if: always() && matrix.configuration == 'Debug' && hashFiles('test_core_${{ matrix.architecture }}.log') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: Test-Core-Logs-${{ matrix.architecture }}
+        path: test_core_${{ matrix.architecture }}.log
+
+    - name: Upload test logs for Infrastructure
+      if: always() && matrix.configuration == 'Debug' && hashFiles('test_infra_${{ matrix.architecture }}.log') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: Test-Infrastructure-Logs-${{ matrix.architecture }}
+        path: test_infra_${{ matrix.architecture }}.log
+
+    - name: Upload test logs for UI
+      if: always() && matrix.configuration == 'Debug' && hashFiles('test_ui_${{ matrix.architecture }}.log') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: Test-UI-Logs-${{ matrix.architecture }}
+        path: test_ui_${{ matrix.architecture }}.log
+
+    # Upload publish logs (only Release)
+    - name: Upload publish logs
+      if: always() && matrix.configuration == 'Release' && hashFiles('publish_${{ matrix.architecture }}.log') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: Publish-Logs-${{ matrix.architecture }}
+        path: publish_${{ matrix.architecture }}.log
 
   release:
     if: startsWith(github.ref, 'refs/tags/')
@@ -63,14 +148,15 @@ jobs:
     needs: build
     permissions:
       contents: write
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    - name: Debug Check Files
-      run: ls -la ${{ github.workspace }}
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
 
     - name: Create GitHub Release
       id: create_release
@@ -83,29 +169,10 @@ jobs:
         draft: false
         prerelease: false
 
-    - name: Download all artifacts
-      uses: actions/download-artifact@v4
-
-    - name: Upload Release Assets (win-x64)
+    - name: Upload Release Assets (Release only)
       uses: actions/upload-release-asset@v1
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ContactKeeper-win-x64/ContactKeeper.zip
+        asset_path: ContactKeeper-win-x64-Release/ContactKeeper.zip
         asset_name: ContactKeeper-win-x64.zip
-        asset_content_type: application/zip
-
-    - name: Upload Release Assets (win-x86)
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ContactKeeper-win-x86/ContactKeeper.zip
-        asset_name: ContactKeeper-win-x86.zip
-        asset_content_type: application/zip
-
-    - name: Upload Release Assets (win-arm64)
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ContactKeeper-win-arm64/ContactKeeper.zip
-        asset_name: ContactKeeper-win-arm64.zip
         asset_content_type: application/zip
