@@ -101,7 +101,7 @@ ContactKeeper uses semantic versioning with Git tags in the format `v{major}.{mi
 
 Creating a version tag on `main` also triggers the CI pipeline's release job (see below), which builds, tests, and publishes the new version as a GitHub Release.
 
-For more details on versioning and validation, see the [versioning tool's README](build/README.md).
+For more details on versioning and validation, see the [versioning tool's README](Build/README.md).
 
 At runtime, the application version is visible in the main window title bar or in the `About` section, from which it may be copied including additional metadata such as branch name, as well as SHA and datetime of the current commit.
 
